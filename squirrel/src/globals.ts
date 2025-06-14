@@ -683,7 +683,8 @@ export const stringCompletions: Set<string>[] = [
 		"SetCounter",
 		"SetTrainRecedeTime",
 		"DisablePhyscannonPickup",
-		"SetIdleModifier"
+		"SetIdleModifier",
+		"RunScriptCode"
 	]),
 	// TARGETNAME,
 	new Set([
