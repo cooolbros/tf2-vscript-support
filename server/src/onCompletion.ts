@@ -75,6 +75,11 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	const items: CompletionItem[] = [];
 	
 	const iterator = new TokenIterator(lexer.getTokens(), result.index);
+	if (checkForDeclaration(iterator)) {
+		return [];
+	}
+	iterator.setIndex(result.index);
+
 	const range = getDotRange(iterator);
 	shortCut = false;
 
@@ -163,6 +168,25 @@ function addCompletionItems(items: CompletionItem[], itemKind: ItemKind, complet
 			data: itemKind,
 		});
 	}
+}
+
+function checkForDeclaration(iterator: TokenIterator): boolean {
+	if (!iterator.hasPrevious()) {
+		return false;
+	}
+
+	let token = iterator.previous();
+	if (token.kind === TokenKind.LOCAL || token.kind === TokenKind.CONST || token.kind === TokenKind.FUNCTION) {
+		return true;
+	}
+	
+	if (token.kind !== TokenKind.IDENTIFIER || !iterator.hasPrevious()) {
+		return false;
+	}
+
+	token = iterator.previous();
+
+	return token.kind === TokenKind.LOCAL || token.kind === TokenKind.CONST || token.kind === TokenKind.FUNCTION;
 }
 
 function getDotRange(iterator: TokenIterator): { start: number, end: number } | undefined {
