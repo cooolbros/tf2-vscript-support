@@ -1,17 +1,4 @@
-export interface Doc {
-	detail: string,
-	desc?: string,
-	successor?: string,
-	append?: string,
-	snippet?: string
-}
-
-
-export type Docs = Map<string, Doc>;
-
-export type InstanceDocs = Map<string, Docs>;
-
-export const keywords: Docs = new Map([
+export const keywords = new Set<string>([
 	"base",
 	"break",
 	"case",
@@ -47,11 +34,867 @@ export const keywords: Docs = new Map([
 	"typeof",
 	"while",
 	"yield"
-].map(keyword =>
-[keyword, {
-	detail: `${keyword}`,
-}]
-));
+]);
+
+export enum StringParam {
+	INPUT,
+	TARGETNAME,
+	ATTRIBUTE,
+	CLASSNAME,
+	MODEL,
+	SOUND,
+	INT_PROPERTY,
+	BOOL_PROPERTY,
+	FLOAT_PROPERTY,
+	STRING_PROPERTY,
+	ENTITY_PROPERTY,
+	VECTOR_PROPERTY,
+	INT_ARRAY_PROPERTY,
+	BOOL_ARRAY_PROPERTY,
+	FLOAT_ARRAY_PROPERTY,
+	STRING_ARRAY_PROPERTY,
+	ENTITY_ARRAY_PROPERTY,
+	VECTOR_ARRAY_PROPERTY,
+	ARRAY_PROPERTY,
+	PROPERTY,
+}
+
+export const stringCompletions: Set<string>[] = [
+	// INPUT
+	new Set([
+		"Kill",
+		"Disable"
+	]),
+	// TARGETNAME,
+	new Set([
+		"!self",
+		"!pvsplayer",
+		"!activator",
+		"!caller",
+		"!player",
+		"BigNet"
+	]),
+	// ATTRIBUTE
+	new Set([
+		"damage penalty"
+	]),
+	// ENTITY
+	new Set([
+		"ai_speechfilter",
+		"aiscripted_schedule",
+		"ambient_generic",
+		"color_correction",
+		"color_correction_volume",
+		"cycler",
+		"env_beam",
+		"env_beverage",
+		"env_blood",
+		"env_bubbles",
+		"env_credits",
+		"env_cubemap",
+		"env_dustpuff",
+		"env_effectscript",
+		"env_embers",
+		"env_entity_igniter",
+		"env_entity_maker",
+		"env_explosion",
+		"env_fade",
+		"env_fire",
+		"env_firesensor",
+		"env_firesource",
+		"env_fog_controller",
+		"env_funnel",
+		"env_hudhint",
+		"env_laser",
+		"env_lightglow",
+		"env_message",
+		"env_microphone",
+		"env_particle_performance_monitor",
+		"env_particlelight",
+		"env_particlescript",
+		"env_physexplosion",
+		"env_physimpact",
+		"env_player_surface_trigger",
+		"env_projectedtexture",
+		"env_rotorshooter",
+		"env_rotorwash_emitter",
+		"env_screeneffect",
+		"env_screenoverlay",
+		"env_shake",
+		"env_shooter",
+		"env_smokestack",
+		"env_smoketrail",
+		"env_soundscape",
+		"env_soundscape_proxy",
+		"env_soundscape_triggerable",
+		"env_spark",
+		"env_splash",
+		"env_sprite",
+		"env_sprite_oriented",
+		"env_spritetrail",
+		"env_steam",
+		"env_sun",
+		"env_texturetoggle",
+		"env_tonemap_controller",
+		"env_viewpunch",
+		"env_wind",
+		"env_zoom",
+		"filter_activator_class",
+		"filter_activator_mass_greater",
+		"filter_activator_name",
+		"filter_damage_type",
+		"filter_enemy",
+		"filter_multi",
+		"func_areaportal",
+		"func_areaportalwindow",
+		"func_breakable",
+		"func_breakable_surf",
+		"func_brush",
+		"func_button",
+		"func_clip_vphysics",
+		"func_conveyor",
+		"func_detail",
+		"func_door",
+		"func_door_rotating",
+		"func_dustcloud",
+		"func_dustmotes",
+		"func_fish_pool",
+		"func_guntarget",
+		"func_illusionary",
+		"func_instance",
+		"func_instance_parms",
+		"func_ladderendpoint",
+		"func_lod",
+		"func_movelinear",
+		"func_occluder",
+		"func_physbox",
+		"func_platrot",
+		"func_precipitation",
+		"func_reflective_glass",
+		"func_rot_button",
+		"func_rotating",
+		"func_smokevolume",
+		"func_tanktrain",
+		"func_trackautochange",
+		"func_trackchange",
+		"func_tracktrain",
+		"func_traincontrols",
+		"func_useableladder",
+		"func_viscluster",
+		"func_wall",
+		"func_wall_toggle",
+		"func_water_analog",
+		"game_end",
+		"game_gib_manager",
+		"game_player_equip",
+		"game_player_team",
+		"game_ragdoll_manager",
+		"game_score",
+		"game_text",
+		"game_ui",
+		"game_weapon_manager",
+		"game_zone_player",
+		"gibshooter",
+		"hammer_updateignorelist",
+		"info_camera_link",
+		"info_constraint_anchor",
+		"info_hint",
+		"info_intermission",
+		"info_ladder_dismount",
+		"info_landmark",
+		"info_lighting",
+		"info_mass_center",
+		"info_no_dynamic_shadow",
+		"info_node",
+		"info_node_air",
+		"info_node_air_hint",
+		"info_node_climb",
+		"info_node_hint",
+		"info_node_link",
+		"info_node_link_controller",
+		"info_npc_spawn_destination",
+		"info_null",
+		"info_overlay",
+		"info_overlay_transition",
+		"info_particle_system",
+		"info_player_start",
+		"info_projecteddecal",
+		"info_radial_link_controller",
+		"info_target",
+		"info_teleport_destination",
+		"infodecal",
+		"keyframe_rope",
+		"keyframe_track",
+		"light",
+		"light_dynamic",
+		"light_environment",
+		"light_spot",
+		"logic_active_autosave",
+		"logic_auto",
+		"logic_autosave",
+		"logic_branch",
+		"logic_branch_listener",
+		"logic_case",
+		"logic_collision_pair",
+		"logic_compare",
+		"logic_lineto",
+		"logic_measure_movement",
+		"logic_multicompare",
+		"logic_navigation",
+		"logic_playerproxy",
+		"logic_relay",
+		"logic_timer",
+		"material_modify_control",
+		"math_colorblend",
+		"math_counter",
+		"math_remap",
+		"momentary_rot_button",
+		"move_keyframed",
+		"move_rope",
+		"move_track",
+		"npc_furniture",
+		"npc_puppet",
+		"npc_template_maker",
+		"path_track",
+		"phys_ballsocket",
+		"phys_constraint",
+		"phys_constraintsystem",
+		"phys_convert",
+		"phys_hinge",
+		"phys_keepupright",
+		"phys_lengthconstraint",
+		"phys_magnet",
+		"phys_motor",
+		"phys_pulleyconstraint",
+		"phys_ragdollconstraint",
+		"phys_ragdollmagnet",
+		"phys_slideconstraint",
+		"phys_spring",
+		"phys_thruster",
+		"phys_torque",
+		"physics_cannister",
+		"point_anglesensor",
+		"point_angularvelocitysensor",
+		"point_bonusmaps_accessor",
+		"point_clientcommand",
+		"point_devshot_camera",
+		"point_enable_motion_fixup",
+		"point_gamestats_counter",
+		"point_hurt",
+		"point_message",
+		"point_playermoveconstraint",
+		"point_posecontroller",
+		"point_proximity_sensor",
+		"point_servercommand",
+		"point_spotlight",
+		"point_teleport",
+		"point_template",
+		"point_tesla",
+		"point_velocitysensor",
+		"point_viewcontrol",
+		"prop_detail",
+		"prop_door_rotating",
+		"prop_dynamic",
+		"prop_dynamic_ornament",
+		"prop_dynamic_override",
+		"prop_physics",
+		"prop_physics_multiplayer",
+		"prop_physics_override",
+		"prop_ragdoll",
+		"prop_static",
+		"script_intro",
+		"shadow_control",
+		"sky_camera",
+		"tanktrain_ai",
+		"tanktrain_aitarget",
+		"test_traceline",
+		"trigger_autosave",
+		"trigger_changelevel",
+		"trigger_gravity",
+		"trigger_hurt",
+		"trigger_impact",
+		"trigger_look",
+		"trigger_multiple",
+		"trigger_once",
+		"trigger_playermovement",
+		"trigger_proximity",
+		"trigger_push",
+		"trigger_remove",
+		"trigger_serverragdoll",
+		"trigger_soundscape",
+		"trigger_teleport",
+		"trigger_transition",
+		"trigger_wind",
+		"vgui_screen",
+		"vgui_slideshow_display",
+		"water_lod_control",
+		"worldspawn",
+		"bot_action_point",
+		"bot_controller",
+		"bot_generator",
+		"bot_hint_sentrygun",
+		"bot_hint_teleporter_exit",
+		"bot_hint_engineer_nest",
+		"bot_hint_sniper_spot",
+		"bot_proxy",
+		"bot_roster",
+		"dispenser_touch_trigger",
+		"filter_activator_tfteam",
+		"filter_tf_bot_has_tag",
+		"filter_tf_class",
+		"filter_tf_condition",
+		"filter_tf_damaged_by_weapon_in_slot",
+		"filter_tf_player_can_cap",
+		"func_capturezone",
+		"func_changeclass",
+		"func_croc",
+		"func_flag_alert",
+		"func_flagdetectionzone",
+		"func_forcefield",
+		"func_upgradestation",
+		"func_nav_avoid",
+		"func_nav_blocker",
+		"func_nav_prefer",
+		"func_nav_prerequisite",
+		"func_nobuild",
+		"func_nogrenades",
+		"func_passtime_goal",
+		"func_passtime_goalie_zone",
+		"func_passtime_no_ball_zone",
+		"func_powerupvolume",
+		"func_proprrespawnzone",
+		"func_regenerate",
+		"func_respawnflag",
+		"func_respawnroom",
+		"func_respawnroomvisualizer",
+		"func_suggested_build",
+		"func_tfbot_hint",
+		"game_forcerespawn",
+		"game_intro_viewpoint",
+		"game_round_win",
+		"game_text_tf",
+		"entity_spawn_manager",
+		"entity_spawn_point",
+		"halloween_zapper",
+		"halloween_fortune_teller",
+		"hightower_teleport_vortex",
+		"info_observer_point",
+		"info_passtime_ball_spawn",
+		"info_player_teamspawn",
+		"info_powerup_spawn",
+		"item_ammopack_full",
+		"item_ammopack_medium",
+		"item_ammopack_small",
+		"item_healthkit_full",
+		"item_healthkit_medium",
+		"item_healthkit_small",
+		"item_powerup_crit",
+		"item_powerup_uber",
+		"item_teamflag",
+		"mapobj_cart_dispenser",
+		"obj_dispenser",
+		"obj_sentrygun",
+		"obj_teleporter",
+		"passtime_logic",
+		"point_intermission",
+		"point_populator_interface",
+		"prop_soccer_ball",
+		"team_control_point",
+		"team_control_point_master",
+		"team_control_point_round",
+		"team_round_timer",
+		"team_train_watcher",
+		"tf_base_minigame",
+		"tf_gamerules",
+		"tf_generic_bomb",
+		"tf_glow",
+		"tf_halloween_gift_spawn_location",
+		"tf_halloween_minigame",
+		"tf_halloween_minigame_falling_platforms",
+		"tf_halloween_pickup",
+		"tf_logic_minigames",
+		"tf_logic_arena",
+		"tf_logic_boss_battle",
+		"tf_logic_competitive",
+		"tf_logic_cp_timer",
+		"tf_logic_holiday",
+		"tf_logic_hybrid_ctf_cp",
+		"tf_logic_koth",
+		"tf_logic_mann_vs_machine",
+		"tf_logic_medieval",
+		"tf_logic_multiple_escort",
+		"tf_logic_on_holiday",
+		"tf_logic_player_destruction",
+		"tf_logic_raid",
+		"tf_logic_robot_destruction",
+		"tf_logic_training_mode",
+		"tf_point_nav_interface",
+		"tf_point_weapon_mimic",
+		"tf_pumpkin_bomb",
+		"tf_robot_destruction_robot_spawn",
+		"tf_robot_destruction_spawn_group",
+		"tf_spawner",
+		"tf_spell_pickup",
+		"tf_teleport_location",
+		"tf_template_stun_drone",
+		"tf_zombie_spawner",
+		"training_annotation",
+		"training_prop_dynamic",
+		"trigger_add_tf_player_condition",
+		"trigger_apply_impulse",
+		"trigger_bot_tag",
+		"trigger_catapult",
+		"trigger_capture_area",
+		"trigger_ignite",
+		"trigger_ignite_arrows",
+		"trigger_passtime_ball",
+		"trigger_player_respawn_override",
+		"trigger_remove_tf_player_condition",
+		"trigger_rd_vault_trigger",
+		"trigger_stun",
+		"trigger_timer_door",
+		"wheel_of_doom",
+		"cycler",
+		"env_cubemap",
+		"env_rotorwash_emitter",
+		"func_detail",
+		"func_instance",
+		"func_instance_parms",
+		"func_viscluster",
+		"info_lighting",
+		"info_no_dynamic_shadow",
+		"info_overlay",
+		"logic_playerproxy",
+		"move_track",
+		"npc_puppet",
+		"prop_detail",
+		"prop_static",
+		"info_overlay_accessor",
+		"path_corner",
+		"trigger_add_or_remove_tf_player_attributes",
+		"trigger_particle",
+		"beam",
+		"entity_bird",
+		"entity_carrier",
+		"entity_rocket",
+		"entity_saucer",
+		"entity_sign",
+		"entity_croc",
+		"entity_soldier_statue",
+		"tf_mann_vs_machine_stats",
+		"tf_logic_bonusround",
+		"tf_player_manager",
+		"tf_populator",
+		"tf_team",
+		"vote_controller",
+		"eyeball_boss",
+		"ghost",
+		"headless_hatman",
+		"tank_boss",
+		"tank_destruction",
+		"merasmus",
+		"merasmus_dancer",
+		"tf_robot_destruction_robot",
+		"tf_zombie",
+		"halloween_souls_pack",
+		"item_bonuspack",
+		"item_healthammokit",
+		"item_currencypack_small",
+		"item_currencypack_medium",
+		"item_currencypack_large",
+		"item_currencypack_custom",
+		"item_powerup_rune",
+		"item_powerup_rune_temp",
+		"tf_ammo_pack",
+		"tf_bonus_duck_pickup",
+		"tf_dropped_weapon",
+		"tf_halloween_gift_pickup",
+		"tf_powerup_bottle",
+		"entity_medigun_shield",
+		"entity_revive_marker",
+		"instanced_scripted_scene",
+		"item_teamflag_return_icon",
+		"monster_resource",
+		"passtime_ball",
+		"player",
+		"point_commentary_node",
+		"soundent",
+		"tf_bot",
+		"tf_flame",
+		"tf_flame_rocket",
+		"tf_merasmus_trick_or_treat_prop",
+		"tf_objective_resource",
+		"tf_ragdoll",
+		"tf_taunt_prop",
+		"tf_target_dummy",
+		"tf_viewmodel",
+		"wheel_of_doom_spiral",
+		"rd_robot_dispenser",
+		"pd_dispenser",
+		"tf_projectile_arrow",
+		"tf_projectile_balloffire",
+		"tf_projectile_ball_ornament",
+		"tf_projectile_cleaver",
+		"tf_projectile_energy_ball",
+		"tf_projectile_energy_ring",
+		"tf_projectile_flare",
+		"tf_projectile_grapplinghook",
+		"tf_projectile_healing_bolt",
+		"tf_projectile_jar",
+		"tf_projectile_jar_gas",
+		"tf_projectile_jar_milk",
+		"tf_projectile_lightningorb",
+		"tf_projectile_pipe",
+		"tf_projectile_pipe_remote",
+		"tf_projectile_rocket",
+		"tf_projectile_sentryrocket",
+		"tf_projectile_spellbats",
+		"tf_projectile_spellfireball",
+		"tf_projectile_spellkartbats",
+		"tf_projectile_spellkartorb",
+		"tf_projectile_spellmeteorshower",
+		"tf_projectile_spellmirv",
+		"tf_projectile_spellpumpkin",
+		"tf_projectile_spellspawnboss",
+		"tf_projectile_spellspawnhorde",
+		"tf_projectile_spellspawnzombie",
+		"tf_projectile_spelltransposeteleport",
+		"tf_projectile_stun_ball",
+		"tf_projectile_syringe",
+		"tf_projectile_throwable",
+		"tf_projectile_throwable_breadmonster",
+		"tf_projectile_throwable_brick",
+		"tf_projectile_throwable_repel",
+		"obj_attachment_sapper",
+		"tf_weapon_base",
+		"tf_weapon_bat",
+		"tf_weapon_bat_fish",
+		"tf_weapon_bat_giftwrap",
+		"tf_weapon_bat_wood",
+		"tf_weapon_bonesaw",
+		"tf_weapon_bottle",
+		"tf_weapon_breakable_sign",
+		"tf_weapon_buff_item",
+		"tf_weapon_builder",
+		"tf_weapon_cannon",
+		"tf_weapon_charged_smg",
+		"tf_weapon_cleaver",
+		"tf_weapon_club",
+		"tf_weapon_compound_bow",
+		"tf_weapon_crossbow",
+		"tf_weapon_drg_pomson",
+		"tf_weapon_fireaxe",
+		"tf_weapon_fists",
+		"tf_weapon_flamethrower",
+		"tf_weapon_flaregun",
+		"tf_weapon_flaregun_revenge",
+		"tf_weapon_grapplinghook",
+		"tf_weapon_grenadelauncher",
+		"tf_weapon_handgun_scout_primary",
+		"tf_weapon_handgun_scout_secondary",
+		"tf_weapon_invis",
+		"tf_weapon_jar",
+		"tf_weapon_jar_milk",
+		"tf_weapon_jar_gas",
+		"tf_weapon_katana",
+		"tf_weapon_knife",
+		"tf_weapon_laser_pointer",
+		"tf_weapon_lunchbox",
+		"tf_weapon_lunchbox_drink",
+		"tf_weapon_mechanical_arm",
+		"tf_weapon_medigun",
+		"tf_weapon_minigun",
+		"tf_weapon_parachute",
+		"tf_weapon_parachute_primary",
+		"tf_weapon_parachute_secondary",
+		"tf_weapon_particle_cannon",
+		"tf_weapon_passtime_gun",
+		"tf_weapon_pda_engineer_build",
+		"tf_weapon_pda_engineer_destroy",
+		"tf_weapon_pda_spy",
+		"tf_weapon_pep_brawler_blaster",
+		"tf_weapon_pipebomblauncher",
+		"tf_weapon_pistol",
+		"tf_weapon_pistol_scout",
+		"tf_weapon_raygun",
+		"tf_weapon_revolver",
+		"tf_weapon_robot_arm",
+		"tf_weapon_rocketlauncher",
+		"tf_weapon_rocketlauncher_airstrike",
+		"tf_weapon_rocketlauncher_directhit",
+		"tf_weapon_rocketlauncher_fireball",
+		"tf_weapon_rocketpack",
+		"tf_weapon_sapper",
+		"tf_weapon_scattergun",
+		"tf_weapon_sentry_revenge",
+		"tf_weapon_shotgun_hwg",
+		"tf_weapon_shotgun_primary",
+		"tf_weapon_shotgun_pyro",
+		"tf_weapon_shotgun_building_rescue",
+		"tf_weapon_shotgun_soldier",
+		"tf_weapon_shovel",
+		"tf_weapon_slap",
+		"tf_weapon_smg",
+		"tf_weapon_sniperrifle",
+		"tf_weapon_sniperrifle_classic",
+		"tf_weapon_sniperrifle_decap",
+		"tf_weapon_soda_popper",
+		"tf_weapon_spellbook",
+		"tf_weapon_stickbomb",
+		"tf_weapon_sword",
+		"tf_weapon_syringegun_medic",
+		"tf_weapon_wrench",
+		"tf_weaponbase_grenade_proj",
+		"tf_weaponbase_melee",
+		"tf_weaponbase_merasmus_grenade",
+		"tf_wearable",
+		"wearable_item",
+		"tf_wearable_campaign_item",
+		"tf_wearable_demoshield",
+		"tf_wearable_levelable_item",
+		"tf_wearable_razorback",
+		"tf_wearable_robot_arm",
+		"tf_wearable_vm",
+		"vgui_screen_team",
+		"_firesmoke",
+		"_plasma",
+		"ai_ally_speech_manager",
+		"ai_battle_line",
+		"ai_changehintgroup",
+		"ai_changetarget",
+		"ai_goal_assault",
+		"ai_goal_follow",
+		"ai_goal_lead",
+		"ai_goal_lead_weapon",
+		"ai_goal_standoff",
+		"ai_hint",
+		"ai_network",
+		"ai_relationship",
+		"ai_script_conditions",
+		"ai_sound",
+		"aiscripted_schedule",
+		"aitesthull",
+		"assault_assaultpoint",
+		"assault_rallypoint",
+		"cycler_actor",
+		"cycler_flex",
+		"dynamic_prop",
+		"entity_blocker",
+		"entityflame",
+		"env_debughistory",
+		"env_detail_controller",
+		"env_dusttrail",
+		"env_entity_dissolver",
+		"env_fire_trail",
+		"env_global",
+		"env_glow",
+		"env_gunfire",
+		"env_laserdot",
+		"env_movieexplosion",
+		"env_muzzleflash",
+		"env_particle_trail",
+		"env_particlefire",
+		"env_particlesmokegrenade",
+		"env_physwire",
+		"env_quadraticbeam",
+		"env_ragdoll_boogie",
+		"env_rockettrail",
+		"env_sniperdot",
+		"env_sporeexplosion",
+		"env_sporetrail",
+		"env_steamjet",
+		"env_tracer",
+		"event_queue_saveload_proxy",
+		"fish",
+		"lex",
+		"func_monitor",
+		"func_nav_avoidance_obstacle",
+		"func_nav_blocker",
+		"func_vehicleclip",
+		"info_player_deathmatch",
+		"info_populator",
+		"item_sodacan",
+		"logic_choreographed_scene",
+		"logic_proximity",
+		"logic_scene_list_manager",
+		"monster_furniture",
+		"monster_generic",
+		"npc_concussiongrenade",
+		"npc_contactgrenade",
+		"npc_handgrenade",
+		"npc_maker",
+		"npc_vehicledriver",
+		"path_corner_crash",
+		"player_loadsaved",
+		"player_manager",
+		"player_speedmod",
+		"player_weaponstrip",
+		"point_camera",
+		"populator_internal_spawn_point",
+		"scene_manager",
+		"scripted_scene",
+		"scripted_sentence",
+		"scripted_sequence",
+		"scripted_target",
+		"simple_bot",
+		"simple_physics_brush",
+		"simple_physics_prop",
+		"tf_pda_expansion_dispenser",
+		"tf_pda_expansion_teleporter",
+		"tf_spell_meteorshowerspawner",
+		"prop_vehicle",
+		"prop_vehicle_driveable",
+		"_ballplayertoucher",
+		"archer_proxy",
+		"base_boss",
+		"bot_npc_archer",
+		"bot_npc_decoy",
+		"commentary_auto",
+		"filter_activator_team",
+		"filter_base",
+		"lex",
+		"func_physbox_multiplayer",
+		"func_plat",
+		"func_pushable",
+		"func_train",
+		"func_water",
+		"func_weight_button",
+		"generic_actor",
+		"gib",
+		"grenade",
+		"handle_dummy",
+		"handle_test",
+		"info_lighting_relative",
+		"item_armor",
+		"light_glspot",
+		"momentary_door",
+		"multisource",
+		"phys_bone_follower",
+		"physics_entity_solver",
+		"physics_npc_solver",
+		"physics_prop",
+		"physics_prop_ragdoll",
+		"point_commentary_viewpoint",
+		"point_push",
+		"prop_physics_respawnable",
+		"prop_ragdoll_attached",
+		"prop_sphere",
+		"raggib",
+		"rope_anchor",
+		"spark_shower",
+		"spotlight_end",
+		"spraycan",
+		"target_cdaudio",
+		"target_changegravity",
+		"te_tester",
+		"team_manager",
+		"test_effect",
+		"test_proxytoggle",
+		"trigger",
+		"trigger_brush",
+		"trigger_cdaudio",
+		"trigger_togglesave",
+		"trigger_vphysics_motion",
+		"viewmodel",
+		"waterbullet",
+		"weapon_ifm_base",
+		"weapon_ifm_base_camera",
+		"weapon_ifm_steadycam",
+		"window_pane",
+		"world_items",
+	]),
+	// MODEL
+	new Set([
+
+	]),
+	// SOUND
+	new Set([
+
+	]),
+	// INT_PROPERTY
+	new Set([
+
+	]),
+	// BOOL_PROPERTY
+	new Set([
+
+	]),
+	// FLOAT_PROPERTY
+	new Set([
+
+	]),
+	// STRING_PROPERTY
+	new Set([
+
+	]),
+	// ENTITY_PROPERTY
+	new Set([
+
+	]),
+	// VECTOR_PROPERTY
+	new Set([
+
+	]),
+	// INT_ARRAY_PROPERTY
+	new Set([
+
+	]),
+	// BOOL_ARRAY_PROPERTY
+	new Set([
+
+	]),
+	// FLOAT_ARRAY_PROPERTY
+	new Set([
+
+	]),
+	// STRING_ARRAY_PROPERTY
+	new Set([
+
+	]),
+	// ENTITY_ARRAY_PROPERTY
+	new Set([
+
+	]),
+	// VECTOR_ARRAY_PROPERTY
+	new Set([
+
+	]),
+]
+
+stringCompletions[StringParam.ARRAY_PROPERTY] = new Set([
+	...stringCompletions[StringParam.INT_ARRAY_PROPERTY],
+	...stringCompletions[StringParam.BOOL_ARRAY_PROPERTY],
+	...stringCompletions[StringParam.FLOAT_ARRAY_PROPERTY],
+	...stringCompletions[StringParam.STRING_ARRAY_PROPERTY],
+	...stringCompletions[StringParam.ENTITY_ARRAY_PROPERTY],
+	...stringCompletions[StringParam.VECTOR_ARRAY_PROPERTY]
+]);
+
+stringCompletions[StringParam.PROPERTY] = new Set([
+	...stringCompletions[StringParam.INT_PROPERTY],
+	...stringCompletions[StringParam.BOOL_PROPERTY],
+	...stringCompletions[StringParam.FLOAT_PROPERTY],
+	...stringCompletions[StringParam.STRING_PROPERTY],
+	...stringCompletions[StringParam.ENTITY_PROPERTY],
+	...stringCompletions[StringParam.VECTOR_PROPERTY],
+
+	...stringCompletions[StringParam.ARRAY_PROPERTY]
+])
+
+export interface Doc {
+	detail: string;
+	desc?: string;
+	successor?: string;
+	append?: string;
+	snippet?: string;
+	[param: number]: StringParam | undefined;
+}
+
+
+export type Docs = Map<string, Doc>;
+
+export type InstanceDocs = Map<string, Docs>;
+
 
 export const methods: Docs = new Map([
 	/* --------------------------- *
@@ -59,7 +902,8 @@ export const methods: Docs = new Map([
 	 * --------------------------- */
 	["AcceptInput", {
 		detail: "CBaseEntity.AcceptInput(input: string, param: string, activator: handle, caller: handle) -> bool",
-		desc: "Generate a synchronous I/O event. Unlike `EntFireByHandle`, this is processed immediately. Returns false if `input` is a null/empty string, or if the input wasn't handled."
+		desc: "Generate a synchronous I/O event. Unlike `EntFireByHandle`, this is processed immediately. Returns false if `input` is a null/empty string, or if the input wasn't handled.",
+		0: StringParam.INPUT
 	}],
 	["AddEFlags", {
 		detail: "CBaseEntity.AddEFlags(flags: FEntityEFlags) -> null",
@@ -285,7 +1129,9 @@ export const methods: Docs = new Map([
 	}],
 	["GetSoundDuration", {
 		detail: "CBaseEntity.GetSoundDuration(sound_name: string, actor_model_name: string) -> float",
-		desc: "Returns float duration of the sound. Actor model name is optional and can be left null."
+		desc: "Returns float duration of the sound. Actor model name is optional and can be left null.",
+		0: StringParam.SOUND,
+		1: StringParam.MODEL
 	}],
 	["GetTeam", {
 		detail: "CBaseEntity.GetTeam() -> int",
@@ -356,7 +1202,8 @@ export const methods: Docs = new Map([
 	}],
 	["PrecacheModel", {
 		detail: "CBaseEntity.PrecacheModel(model_name: string) -> null",
-		desc: "Precache a model (`.mdl`) or sprite (`.vmt`). The extension must be specified."
+		desc: "Precache a model (`.mdl`) or sprite (`.vmt`). The extension must be specified.",
+		0: StringParam.MODEL
 	}],
 	["PrecacheScriptSound", {
 		detail: "CBaseEntity.PrecacheScriptSound(sound_script: string) -> null",
@@ -432,7 +1279,8 @@ export const methods: Docs = new Map([
 	}],
 	["SetModel", {
 		detail: "CBaseEntity.SetModel(model_name: string) -> null",
-		desc: "Set a model for this entity."
+		desc: "Set a model for this entity.",
+		0: StringParam.MODEL
 	}],
 	["SetMoveType", {
 		detail: "CBaseEntity.SetMoveType(movetype: EMoveType, movecollide: EMoveCollide) -> null",
@@ -617,7 +1465,8 @@ export const methods: Docs = new Map([
 	}],
 	["SetModelSimple", {
 		detail: "CBaseAnimating.SetModelSimple(model_name: string) -> null",
-		desc: "Set a model for this entity. Matches easier behaviour of the SetModel input, automatically precaches, maintains sequence/cycle if possible. Also clears the bone cache."
+		desc: "Set a model for this entity. Matches easier behaviour of the SetModel input, automatically precaches, maintains sequence/cycle if possible. Also clears the bone cache.",
+		0: StringParam.MODEL
 	}],
 	["SetModelScale", {
 		detail: "CBaseAnimating.SetModelScale(scale: float, change_duration: float) -> null",
@@ -764,7 +1613,8 @@ export const methods: Docs = new Map([
 	}],
 	["SetCustomViewModel", {
 		detail: "CBaseCombatWeapon.SetCustomViewModel(model_name: string) -> null",
-		desc: "Sets a custom view model for this weapon by model name."
+		desc: "Sets a custom view model for this weapon by model name.",
+		0: StringParam.MODEL
 	}],
 	["SetCustomViewModelModelIndex", {
 		detail: "CBaseCombatWeapon.SetCustomViewModelModelIndex(model_index: int) -> null",
@@ -855,16 +1705,19 @@ export const methods: Docs = new Map([
 	 * CEconEntity                 *
 	 * --------------------------- */
 	["AddAttribute", {
-		detail: "CEconEntity.AddAttribute(name: string, value: float, duration: float) -> null",
-		desc: "Add an attribute to the entity. <s>Set duration to 0 or lower for the attribute to be applied forever</s> See the bug below. The attribute must be one that exists in the game, invalid ones will not be added."
+		detail: "CEconEntity.AddAttribute(attribute: string, value: float, duration: float) -> null",
+		desc: "Add an attribute to the entity. <s>Set duration to 0 or lower for the attribute to be applied forever</s> See the bug below. The attribute must be one that exists in the game, invalid ones will not be added.",
+		0: StringParam.ATTRIBUTE
 	}],
 	["GetAttribute", {
-		detail: "CEconEntity.GetAttribute(name: string, default_value: float) -> float",
-		desc: "Get an attribute float from the entity. If the attribute does not exist, returns `default_value`."
+		detail: "CEconEntity.GetAttribute(attribute: string, default_value: float) -> float",
+		desc: "Get an attribute float from the entity. If the attribute does not exist, returns `default_value`.",
+		0: StringParam.ATTRIBUTE
 	}],
 	["RemoveAttribute", {
-		detail: "CEconEntity.RemoveAttribute(name: string) -> null",
-		desc: "Remove an attribute from the entity."
+		detail: "CEconEntity.RemoveAttribute(attribute: string) -> null",
+		desc: "Remove an attribute from the entity.",
+		0: StringParam.ATTRIBUTE
 	}],
 	["ReapplyProvision", {
 		detail: "CEconEntity.ReapplyProvision() -> null",
@@ -886,8 +1739,9 @@ export const methods: Docs = new Map([
 		desc: "Kaching! Give the player some cash for game modes with upgrades, ie. MvM. The new value is bounded between 0-30000."
 	}],
 	["AddCustomAttribute", {
-		detail: "CTFPlayer.AddCustomAttribute(name: string, value: float, duration: float) -> null",
-		desc: "Add a custom attribute to the player. Set duration to 0 or lower for the attribute to be applied forever. The attribute must be one that exists in the game, invalid ones will not be added."
+		detail: "CTFPlayer.AddCustomAttribute(attribute: string, value: float, duration: float) -> null",
+		desc: "Add a custom attribute to the player. Set duration to 0 or lower for the attribute to be applied forever. The attribute must be one that exists in the game, invalid ones will not be added.",
+		0: StringParam.ATTRIBUTE
 	}],
 	["AddHudHideFlags", {
 		detail: "CTFPlayer.AddHudHideFlags(flags: FHideHUD) -> null",
@@ -1012,8 +1866,9 @@ export const methods: Docs = new Map([
 		desc: "Returns duration of the condition. Returns 0 if the cond is not applied. Returns -1 if the cond is infinite.\n\nSee [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
 	}],
 	["GetCustomAttribute", {
-		detail: "CTFPlayer.GetCustomAttribute(name: string, default_value: float) -> float",
-		desc: "Get an attribute float from the player. If the attribute does not exist, returns `default_value`."
+		detail: "CTFPlayer.GetCustomAttribute(attribute: string, default_value: float) -> float",
+		desc: "Get an attribute float from the player. If the attribute does not exist, returns `default_value`.",
+		0: StringParam.ATTRIBUTE
 	}],
 	["GetCurrency", {
 		detail: "CTFPlayer.GetCurrency() -> int",
@@ -1250,8 +2105,9 @@ export const methods: Docs = new Map([
 		desc: "Take away money from a player for reasons such as ie. spending. Lower bounded to 0."
 	}],
 	["RemoveCustomAttribute", {
-		detail: "CTFPlayer.RemoveCustomAttribute(name: string) -> null",
-		desc: "Remove a custom attribute to the player."
+		detail: "CTFPlayer.RemoveCustomAttribute(attribute: string) -> null",
+		desc: "Remove a custom attribute to the player.",
+		0: StringParam.ATTRIBUTE
 	}],
 	["RemoveDisguise", {
 		detail: "CTFPlayer.RemoveDisguise() -> null",
@@ -1287,7 +2143,8 @@ export const methods: Docs = new Map([
 	}],
 	["SetCustomModel", {
 		detail: "CTFPlayer.SetCustomModel(model_name: string) -> null",
-		desc: "Sets a custom player model without animations (model will T-pose). To enable animations, use `SetCustomModelWithClassAnimations` instead."
+		desc: "Sets a custom player model without animations (model will T-pose). To enable animations, use `SetCustomModelWithClassAnimations` instead.",
+		0: StringParam.MODEL
 	}],
 	["SetCustomModelOffset", {
 		detail: "CTFPlayer.SetCustomModelOffset(offset: Vector) -> null"
@@ -1303,7 +2160,8 @@ export const methods: Docs = new Map([
 	}],
 	["SetCustomModelWithClassAnimations", {
 		detail: "CTFPlayer.SetCustomModelWithClassAnimations(model_name: string) -> null",
-		desc: "Sets a custom player model with full animations."
+		desc: "Sets a custom player model with full animations.",
+		0: StringParam.MODEL
 	}],
 	["SetDisguiseAmmoCount", {
 		detail: "CTFPlayer.SetDisguiseAmmoCount(count: int) -> null"
@@ -1980,7 +2838,8 @@ export const methods: Docs = new Map([
 	 * --------------------------- */
 	["AddTemplate", {
 		detail: "CPointScriptTemplate.AddTemplate(classname: string, keyvalues: table) -> null",
-		desc: "Add an entity with the given keyvalues to the template spawner, similar to `SpawnEntityFromTable`. The number of templates allowed is unlimited."
+		desc: "Add an entity with the given keyvalues to the template spawner, similar to `SpawnEntityFromTable`. The number of templates allowed is unlimited.",
+		0: StringParam.CLASSNAME
 	}],
 	["SetGroupSpawnTables", {
 		detail: "CPointScriptTemplate.SetGroupSpawnTables(group: table, spawn: table) -> null",
@@ -2433,10 +3292,10 @@ export const methods: Docs = new Map([
 	/* --------------------------- *
 	 * Quaternion                  *
 	 * --------------------------- *//*
- Dot: {
-	 detail: "Quaternion.Dot(factor: Quaternion) -> float",
-	 desc: "The 4D scalar product of two quaternions. represents the angle between the quaternions in the range [1, 0]."
- }, */
+Dot: {
+	detail: "Quaternion.Dot(factor: Quaternion) -> float",
+	desc: "The 4D scalar product of two quaternions. represents the angle between the quaternions in the range [1, 0]."
+}, */
 	["Invert", {
 		detail: "Quaternion.Invert() -> Quaternion",
 		desc: "Returns a quaternion with the complimentary rotation."
@@ -2773,7 +3632,8 @@ export const functions: Docs = new Map([
 	}],
 	["CreateProp", {
 		detail: "CreateProp(classname: string, origin: Vector, model_name: string, activity: int) -> handle",
-		desc: "Create a prop."
+		desc: "Create a prop.",
+		0: StringParam.CLASSNAME
 	}],
 	["CreateSceneEntity", {
 		detail: "CreateSceneEntity(scene: string) -> handle",
@@ -2792,7 +3652,9 @@ export const functions: Docs = new Map([
 	}],
 	["DoEntFire", {
 		detail: "DoEntFire(target: string, action: string, value: string, delay: float, activator: handle, caller: handle) -> null",
-		desc: "Generate an entity I/O event. The `caller` and `activator` argument takes a `CBaseEntity` script handle, and entities assigned can receive inputs with `target` set to *!self*, or *!activator* / *!caller*. Negative delays are clamped to 0."
+		desc: "Generate an entity I/O event. The `caller` and `activator` argument takes a `CBaseEntity` script handle, and entities assigned can receive inputs with `target` set to *!self*, or *!activator* / *!caller*. Negative delays are clamped to 0.",
+		0: StringParam.TARGETNAME,
+		1: StringParam.INPUT
 	}],
 	["DoIncludeScript", {
 		detail: "DoIncludeScript(file: string, handle/scope: table) -> bool",
@@ -2824,11 +3686,15 @@ export const functions: Docs = new Map([
 	}],
 	["EntFire", {
 		detail: "EntFire(target: string, action: string, value: string = \"\", delay: float = 0.0, activator: handle = null) -> null",
-		desc: "Wrapper for DoEntFire() that sets `activator` to null, but has no `caller` param. Negative delays are clamped to 0."
+		desc: "Wrapper for DoEntFire() that sets `activator` to null, but has no `caller` param. Negative delays are clamped to 0.",
+		0: StringParam.TARGETNAME,
+		1: StringParam.INPUT
 	}],
 	["EntFireByHandle", {
 		detail: "EntFireByHandle(entity: handle, action: string, value: string, delay: float, activator: handle, caller: handle) -> null",
-		desc: "Generate an entity I/O event. First parameter is an entity instance. Negative delays are clamped to 0."
+		desc: "Generate an entity I/O event. First parameter is an entity instance. Negative delays are clamped to 0.",
+		0: StringParam.TARGETNAME,
+		1: StringParam.INPUT
 	}],
 	["EntIndexToHScript", {
 		detail: "EntIndexToHScript(entindex: int) -> handle",
@@ -2885,7 +3751,8 @@ export const functions: Docs = new Map([
 	}],
 	["GetModelIndex", {
 		detail: "GetModelIndex(model_name: string) -> int",
-		desc: "Returns the index of the named model."
+		desc: "Returns the index of the named model.",
+		0: StringParam.MODEL
 	}],
 	["GetPlayerFromUserID", {
 		detail: "GetPlayerFromUserID(userid: int) -> handle",
@@ -2893,7 +3760,9 @@ export const functions: Docs = new Map([
 	}],
 	["GetSoundDuration", {
 		detail: "GetSoundDuration(sound_name: string, actor_model_name: string) -> float",
-		desc: "Returns float duration of the sound. Actor model name is optional and can be left null."
+		desc: "Returns float duration of the sound. Actor model name is optional and can be left null.",
+		0: StringParam.SOUND,
+		1: StringParam.MODEL
 	}],
 	["IsDedicatedServer", {
 		detail: "IsDedicatedServer() -> bool",
@@ -2901,7 +3770,8 @@ export const functions: Docs = new Map([
 	}],
 	["IsModelPrecached", {
 		detail: "IsModelPrecached(model_name: string) -> bool",
-		desc: "Checks if the `model_name` is precached."
+		desc: "Checks if the `model_name` is precached.",
+		0: StringParam.MODEL
 	}],
 	["IsSoundPrecached", {
 		detail: "IsSoundPrecached(sound_name: string) -> bool",
@@ -2939,15 +3809,18 @@ export const functions: Docs = new Map([
 	}],
 	["PrecacheModel", {
 		detail: "PrecacheModel(model_name: string) -> int",
-		desc: "Precache a model (`.mdl`) or sprite (`.vmt`) and return model index. The extension must be specified. Returns -1 if null or empty `model_name` is passed in. Missing models/sprites will still return a new index."
+		desc: "Precache a model (`.mdl`) or sprite (`.vmt`) and return model index. The extension must be specified. Returns -1 if null or empty `model_name` is passed in. Missing models/sprites will still return a new index.",
+		0: StringParam.MODEL
 	}],
 	["PrecacheScriptSound", {
 		detail: "PrecacheScriptSound(sound_name: string) -> bool",
-		desc: "Precache a soundscript. Returns false if soundscript is missing, or if a null or empty sound name is passed in."
+		desc: "Precache a soundscript. Returns false if soundscript is missing, or if a null or empty sound name is passed in.",
+		0: StringParam.SOUND
 	}],
 	["PrecacheSound", {
 		detail: "PrecacheSound(sound_name: string) -> bool",
-		desc: "Precache a raw sound. Returns false if a null or empty sound name is passed in."
+		desc: "Precache a raw sound. Returns false if a null or empty sound name is passed in.",
+		0: StringParam.SOUND
 	}],
 	["PrintHelp", {
 		detail: "PrintHelp() -> null",
@@ -3021,7 +3894,8 @@ export const functions: Docs = new Map([
 	}],
 	["SpawnEntityFromTable", {
 		detail: "SpawnEntityFromTable(name: string, keyvalues: table) -> handle",
-		desc: "Spawn entity from KeyValues in table - `name` is entity name, rest are KeyValues for spawn."
+		desc: "Spawn entity from KeyValues in table - `name` is entity name, rest are KeyValues for spawn.",
+		0: StringParam.MODEL
 	}],
 	["SpawnEntityGroupFromTable", {
 		detail: "SpawnEntityGroupFromTable(groups: table) -> bool",
@@ -5339,7 +6213,8 @@ export const instancesMethods: InstanceDocs = new Map([
 	["Entities", new Map([
 		["CreateByClassname", {
 			detail: "CEntities.CreateByClassname(classname: string) -> handle",
-			desc: "Creates an entity by classname."
+			desc: "Creates an entity by classname.",
+			0: StringParam.CLASSNAME
 		}],
 		["DispatchSpawn", {
 			detail: "CEntities.DispatchSpawn(entity: handle) -> null",
@@ -5347,31 +6222,38 @@ export const instancesMethods: InstanceDocs = new Map([
 		}],
 		["FindByClassname", {
 			detail: "CEntities.FindByClassname(previous: handle, classname: string) -> handle",
-			desc: "Find entities by the string of their `classname` keyvalue. Pass `null` value to start an iteration, or reference to a previously found entity to continue a search."
+			desc: "Find entities by the string of their `classname` keyvalue. Pass `null` value to start an iteration, or reference to a previously found entity to continue a search.",
+			1: StringParam.CLASSNAME
 		}],
 		["FindByClassnameNearest", {
 			detail: "CEntities.FindByClassnameNearest(classname: string, center: Vector, radius: float) -> handle",
-			desc: "Find entities by classname nearest to a point within a radius."
+			desc: "Find entities by classname nearest to a point within a radius.",
+			0: StringParam.CLASSNAME
 		}],
 		["FindByClassnameWithin", {
 			detail: "CEntities.FindByClassnameWithin(previous: handle, classname: string, center: Vector, radius: float) -> handle",
-			desc: "Find entities by classname within a radius. Pass `null` to start an iteration, or reference to a previously found entity to continue a search."
+			desc: "Find entities by classname within a radius. Pass `null` to start an iteration, or reference to a previously found entity to continue a search.",
+			1: StringParam.CLASSNAME
 		}],
 		["FindByModel", {
 			detail: "CEntities.FindByModel(previous: handle, model_name: string) -> handle",
-			desc: "Find entities by the string of their `model` keyvalue. Pass `null` to start an iteration, or reference to a previously found entity to continue a search."
+			desc: "Find entities by the string of their `model` keyvalue. Pass `null` to start an iteration, or reference to a previously found entity to continue a search.",
+			1: StringParam.MODEL
 		}],
 		["FindByName", {
 			detail: "CEntities.FindByName(previous: handle, targetname: string) -> handle",
-			desc: "Find entities by the string of their"
+			desc: "Find entities by the string of their",
+			1: StringParam.TARGETNAME
 		}],
 		["FindByNameNearest", {
 			detail: "CEntities.FindByNameNearest(targetname: string, center: Vector, radius: float) -> handle",
-			desc: "Find entities by targetname nearest to a point within a radius."
+			desc: "Find entities by targetname nearest to a point within a radius.",
+			0: StringParam.TARGETNAME
 		}],
 		["FindByNameWithin", {
 			detail: "CEntities.FindByNameWithin(previous: handle, targetname: string, center: Vector, radius: float) -> handle",
-			desc: "Find entities by targetname within a radius. Pass `null` to start an iteration, or reference to a previously found entity to continue a search."
+			desc: "Find entities by targetname within a radius. Pass `null` to start an iteration, or reference to a previously found entity to continue a search.",
+			1: StringParam.TARGETNAME
 		}],
 		["FindByTarget", {
 			detail: "CEntities.FindByTarget(previous: handle, target: string) -> handle",
@@ -5483,63 +6365,78 @@ export const instancesMethods: InstanceDocs = new Map([
 	["NetProps", new Map([
 		["GetPropArraySize", {
 			detail: "CNetPropManager.GetPropArraySize(entity: handle, property_name: string) -> int",
-			desc: "Returns the size of an netprop array, or -1."
+			desc: "Returns the size of an netprop array, or -1.",
+			1: StringParam.ARRAY_PROPERTY
 		}],
 		["GetPropEntity", {
 			detail: "CNetPropManager.GetPropEntity(entity: handle, property_name: string) -> handle",
-			desc: "Reads an EHANDLE-valued netprop (21 bit integer). Returns the script handle of the entity."
+			desc: "Reads an EHANDLE-valued netprop (21 bit integer). Returns the script handle of the entity.",
+			1: StringParam.ENTITY_PROPERTY
 		}],
 		["GetPropEntityArray", {
 			detail: "CNetPropManager.GetPropEntityArray(entity: handle, property_name: string, array_element: int) -> handle",
-			desc: "Reads an EHANDLE-valued netprop (21 bit integer) from an array. Returns the script handle of the entity."
+			desc: "Reads an EHANDLE-valued netprop (21 bit integer) from an array. Returns the script handle of the entity.",
+			1: StringParam.ENTITY_ARRAY_PROPERTY
 		}],
 		["GetPropBool", {
 			detail: "CNetPropManager.GetPropBool(entity: handle, property_name: string) -> bool",
-			desc: "Reads a boolean-valued netprop."
+			desc: "Reads a boolean-valued netprop.",
+			1: StringParam.BOOL_PROPERTY
 		}],
 		["GetPropBoolArray", {
 			detail: "CNetPropManager.GetPropBoolArray(entity: handle, property_name: string, array_element: int) -> bool",
-			desc: "Reads a boolean-valued netprop from an array."
+			desc: "Reads a boolean-valued netprop from an array.",
+			1: StringParam.BOOL_ARRAY_PROPERTY
 		}],
 		["GetPropFloat", {
 			detail: "CNetPropManager.GetPropFloat(entity: handle, property_name: string) -> float",
-			desc: "Reads a float-valued netprop."
+			desc: "Reads a float-valued netprop.",
+			1: StringParam.FLOAT_PROPERTY
 		}],
 		["GetPropFloatArray", {
 			detail: "CNetPropManager.GetPropFloatArray(entity: handle, property_name: string, array_element: int) -> float",
-			desc: "Reads a float-valued netprop from an array."
+			desc: "Reads a float-valued netprop from an array.",
+			1: StringParam.FLOAT_ARRAY_PROPERTY
 		}],
 		["GetPropInfo", {
 			detail: "CNetPropManager.GetPropInfo(entity: handle, property_name: string, array_element: int, result: table) -> bool",
-			desc: "Fills in a passed table with property info for the provided entity."
+			desc: "Fills in a passed table with property info for the provided entity.",
+			1: StringParam.PROPERTY
 		}],
 		["GetPropInt", {
 			detail: "CNetPropManager.GetPropInt(entity: handle, property_name: string) -> int",
-			desc: "Reads an integer-valued netprop."
+			desc: "Reads an integer-valued netprop.",
+			1: StringParam.INT_PROPERTY
 		}],
 		["GetPropIntArray", {
 			detail: "CNetPropManager.GetPropIntArray(entity: handle, property_name: string, array_element: int) -> int",
-			desc: "Reads an integer-valued netprop from an array."
+			desc: "Reads an integer-valued netprop from an array.",
+			1: StringParam.INT_ARRAY_PROPERTY
 		}],
 		["GetPropString", {
 			detail: "CNetPropManager.GetPropString(entity: handle, property_name: string) -> string",
-			desc: "Reads an string-valued netprop."
+			desc: "Reads an string-valued netprop.",
+			1: StringParam.STRING_PROPERTY
 		}],
 		["GetPropStringArray", {
 			detail: "CNetPropManager.GetPropStringArray(entity: handle, property_name: string, array_element: int) -> string",
-			desc: "Reads an string-valued netprop from an array."
+			desc: "Reads an string-valued netprop from an array.",
+			1: StringParam.STRING_ARRAY_PROPERTY
 		}],
 		["GetPropType", {
 			detail: "CNetPropManager.GetPropType(entity: handle, property_name: string) -> string",
-			desc: "Returns the name of the netprop type as a string."
+			desc: "Returns the name of the netprop type as a string.",
+			1: StringParam.PROPERTY
 		}],
 		["GetPropVector", {
 			detail: "CNetPropManager.GetPropVector(entity: handle, property_name: string) -> Vector",
-			desc: "Reads a 3D vector-valued netprop."
+			desc: "Reads a 3D vector-valued netprop.",
+			1: StringParam.VECTOR_PROPERTY
 		}],
 		["GetPropVectorArray", {
 			detail: "CNetPropManager.GetPropVectorArray(entity: handle, property_name: string, array_element: int) -> Vector",
-			desc: "Reads a 3D vector-valued netprop from an array."
+			desc: "Reads a 3D vector-valued netprop from an array.",
+			1: StringParam.VECTOR_ARRAY_PROPERTY
 		}],
 		["GetTable", {
 			detail: "CNetPropManager.GetTable(entity: handle, prop_type: int, result: table) -> null",
@@ -5547,55 +6444,68 @@ export const instancesMethods: InstanceDocs = new Map([
 		}],
 		["HasProp", {
 			detail: "CNetPropManager.HasProp(entity: handle, property_name: string) -> bool",
-			desc: "Checks if a netprop exists."
+			desc: "Checks if a netprop exists.",
+			1: StringParam.PROPERTY
 		}],
 		["SetPropBool", {
 			detail: "CNetPropManager.SetPropBool(entity: handle, property_name: string, value: bool) -> null",
-			desc: "Sets a netprop to the specified boolean."
+			desc: "Sets a netprop to the specified boolean.",
+			1: StringParam.BOOL_PROPERTY
 		}],
 		["SetPropBoolArray", {
 			detail: "CNetPropManager.SetPropBoolArray(entity: handle, property_name: string, value: bool, array_element: int) -> null",
-			desc: "Sets a netprop from an array to the specified boolean."
+			desc: "Sets a netprop from an array to the specified boolean.",
+			1: StringParam.BOOL_ARRAY_PROPERTY
 		}],
 		["SetPropEntity", {
 			detail: "CNetPropManager.SetPropEntity(entity: handle, property_name: string, value: handle) -> null",
-			desc: "Sets an EHANDLE-valued netprop (21 bit integer) to reference the specified entity."
+			desc: "Sets an EHANDLE-valued netprop (21 bit integer) to reference the specified entity.",
+			1: StringParam.ENTITY_PROPERTY
 		}],
 		["SetPropEntityArray", {
 			detail: "CNetPropManager.SetPropEntityArray(entity: handle, property_name: string, value: handle, array_element: int) -> null",
-			desc: "Sets an EHANDLE-valued netprop (21 bit integer) from an array to reference the specified entity."
+			desc: "Sets an EHANDLE-valued netprop (21 bit integer) from an array to reference the specified entity.",
+			1: StringParam.ENTITY_ARRAY_PROPERTY
 		}],
 		["SetPropFloat", {
 			detail: "CNetPropManager.SetPropFloat(entity: handle, property_name: string, value: float) -> null",
-			desc: "Sets a netprop to the specified float."
+			desc: "Sets a netprop to the specified float.",
+			1: StringParam.FLOAT_PROPERTY
 		}],
 		["SetPropFloatArray", {
 			detail: "CNetPropManager.SetPropFloatArray(entity: handle, property_name: string, value: float, array_element: int) -> null",
-			desc: "Sets a netprop from an array to the specified float."
+			desc: "Sets a netprop from an array to the specified float.",
+			1: StringParam.FLOAT_ARRAY_PROPERTY
 		}],
 		["SetPropInt", {
 			detail: "CNetPropManager.SetPropInt(entity: handle, property_name: string, value: int) -> null",
-			desc: "Sets a netprop to the specified integer."
+			desc: "Sets a netprop to the specified integer.",
+			1: StringParam.INT_PROPERTY
 		}],
 		["SetPropIntArray", {
 			detail: "CNetPropManager.SetPropIntArray(entity: handle, property_name: string, value: int, array_element: int) -> null",
-			desc: "Sets a netprop from an array to the specified integer."
+			desc: "Sets a netprop from an array to the specified integer.",
+			1: StringParam.INT_ARRAY_PROPERTY
 		}],
 		["SetPropString", {
 			detail: "CNetPropManager.SetPropString(entity: handle, property_name: string, value: string) -> null",
-			desc: "Sets a netprop to the specified string."
+			desc: "Sets a netprop to the specified string.",
+			1: StringParam.STRING_PROPERTY
 		}],
 		["SetPropStringArray", {
 			detail: "CNetPropManager.SetPropStringArray(entity: handle, property_name: string, value: string, array_element: int) -> null",
-			desc: "Sets a netprop from an array to the specified string."
+			desc: "Sets a netprop from an array to the specified string.",
+			1: StringParam.STRING_ARRAY_PROPERTY
 		}],
 		["SetPropVector", {
 			detail: "CNetPropManager.SetPropVector(entity: handle, property_name: string, value: Vector) -> null",
-			desc: "Sets a netprop to the specified vector."
+			desc: "Sets a netprop to the specified vector.",
+			1: StringParam.VECTOR_PROPERTY
 		}],
 		["SetPropVectorArray", {
 			detail: "CNetPropManager.SetPropVectorArray(entity: handle, property_name: string, value: Vector, array_element: int) -> null",
-			desc: "Sets a netprop from an array to the specified vector."
+			desc: "Sets a netprop from an array to the specified vector.",
+			1: StringParam.VECTOR_ARRAY_PROPERTY
 		}]
 	])],
 	["PlayerVoiceListener", new Map([

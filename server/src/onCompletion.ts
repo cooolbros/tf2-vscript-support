@@ -53,9 +53,9 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	const { lexer } = info;
 
 	const position = params.position;
-	const offset = document.offsetAt(position);
+	const offset = document.offsetAt(position) - 1;
 
-	const result = lexer.findTokenAtPosition(offset, true);
+	const result = lexer.findTokenAtPosition(offset);
 	if (result.token) {
 		const kind = result.token.kind;
 		if (kind === TokenKind.LINE_COMMENT || kind === TokenKind.BLOCK_COMMENT) {
@@ -68,7 +68,6 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 			return items;
 		}
 
-		// TODO: Possibly add string completions like assets/attributes
 		if (kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) {
 			const iterator = new TokenIterator(lexer.getTokens(), result.index - 1);
 			const items = stringCompletion(iterator);
