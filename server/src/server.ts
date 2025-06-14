@@ -15,7 +15,7 @@ import {
 } from 'vscode-languageserver/node';
 import { Range, TextDocument } from 'vscode-languageserver-textdocument';
 
-import { isTokenAComment, Lexer, Token, TokenIterator, TokenKind } from 'squirrel';
+import { isTokenAComment, Lexer, Parser, Token, TokenIterator, TokenKind } from 'squirrel';
 
 import onHoverHandler from './onHover';
 import { onCompletionHandler, onCompletionResolveHandler } from './onCompletion';
@@ -110,6 +110,7 @@ let globalSettings: Settings = defaultSettings;
 
 interface DocumentInfo {
 	lexer: Lexer,
+	parser: Parser
 }
 
 export const documentInfo = new Map<string, DocumentInfo>();
@@ -187,12 +188,16 @@ async function validateTextDocument(document: TextDocument): Promise<Diagnostic[
 	const settings = await getDocumentSettings(document.uri);
 	const text = document.getText();
 	const lexer = new Lexer(text);
+	/*
 	for (let token = lexer.lex(); token.kind !== TokenKind.EOF; token = lexer.lex()) {
 		// lex
-	}
+	}*/
+	const parser = new Parser(lexer);
+	parser.parse();
 
 	documentInfo.set(document.uri, {
-		lexer
+		lexer,
+		parser
 	});
 
 	if (!settings.enableDiagnostics) {
@@ -214,6 +219,19 @@ async function validateTextDocument(document: TextDocument): Promise<Diagnostic[
 			source: "lexer"
 		});
 	}
+
+	/*
+	for (const error of parser.getErrors()) {
+		diagnostics.push({
+			range: {
+				// Conversion from 0 based offset
+				start: document.positionAt(error.start),
+				end: document.positionAt(error.end)
+			},
+			message: error.message,
+			source: "parser"
+		});
+	}*/
 
 	return diagnostics;
 }
