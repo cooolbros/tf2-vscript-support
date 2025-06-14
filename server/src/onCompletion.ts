@@ -18,7 +18,6 @@ enum ItemKind {
 }
 
 const itemKindToDocs = new Map<ItemKind, globals.Docs>([
-	[ItemKind.Keywords, globals.keywords],
 	[ItemKind.Methods, globals.methods],
 	[ItemKind.DeprecatedMethods, globals.deprecatedMethods],
 	[ItemKind.Functions, globals.functions],
@@ -54,9 +53,9 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	const { lexer } = info;
 
 	const position = params.position;
-	const offset = document.offsetAt(position) - 1;
+	const offset = document.offsetAt(position);
 
-	const result = lexer.findTokenAtPosition(offset);
+	const result = lexer.findTokenAtPosition(offset, true);
 	if (result.token) {
 		const kind = result.token.kind;
 		if (kind === TokenKind.LINE_COMMENT || kind === TokenKind.BLOCK_COMMENT) {
@@ -70,6 +69,13 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 		}
 
 		// TODO: Possibly add string completions like assets/attributes
+		if (kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) {
+			const iterator = new TokenIterator(lexer.getTokens(), result.index - 1);
+			const items = stringCompletion(iterator);
+			if (items) {
+				return items;
+			}
+		}
 	}
 
 	const items: CompletionItem[] = [];
@@ -142,9 +148,18 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	addCompletionItems(items, ItemKind.InstancesMethods, CompletionItemKind.Method);
 	addCompletionItems(items, ItemKind.InstancesVariables, CompletionItemKind.EnumMember);
 
-	addCompletionItems(items, ItemKind.Keywords, CompletionItemKind.Keyword);
+	addPlainCompletionItems(items, CompletionItemKind.Keyword, globals.keywords);
 
 	return items;
+}
+
+function addPlainCompletionItems(items: CompletionItem[], completionItemKind: CompletionItemKind, docs: Set<string>) {
+	for (const item of docs) {
+		items.push({
+			label: item,
+			kind: completionItemKind,
+		});
+	}
 }
 
 function addCompletionItems(items: CompletionItem[], itemKind: ItemKind, completionItemKind: CompletionItemKind, docs?: globals.Docs): void {
@@ -170,6 +185,49 @@ function addCompletionItems(items: CompletionItem[], itemKind: ItemKind, complet
 	}
 }
 
+function stringCompletion(iterator: TokenIterator): CompletionItem[] | null {
+	if (!iterator.hasPrevious()) {
+		return null;
+	}
+
+	const token = iterator.previous();
+	if (token.kind !== TokenKind.COMMA) {
+		if (token.kind !== TokenKind.LEFT_ROUND) {
+			return null;
+		}
+
+		const doc = iterator.findMethodDoc();
+		if (!doc) {
+			return null;
+		}
+
+		const stringKind = doc[0];
+		if (stringKind === undefined) {
+			return null;
+		}
+
+		const items: CompletionItem[] = [];
+		addPlainCompletionItems(items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		return items;
+	}
+
+	const paramCount = readParamCount(iterator);
+
+	const doc = iterator.findMethodDoc();
+	if (!doc) {
+		return null;
+	}
+
+	const stringKind = doc[paramCount + 1];
+	if (stringKind === undefined) {
+		return null;
+	}
+
+	const items: CompletionItem[] = [];
+	addPlainCompletionItems(items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+	return items;
+}
+
 function checkForDeclaration(iterator: TokenIterator): boolean {
 	if (!iterator.hasPrevious()) {
 		return false;
@@ -187,6 +245,42 @@ function checkForDeclaration(iterator: TokenIterator): boolean {
 	token = iterator.previous();
 
 	return token.kind === TokenKind.LOCAL || token.kind === TokenKind.CONST || token.kind === TokenKind.FUNCTION;
+}
+
+function readParamCount(iterator: TokenIterator): number {
+	let depth = 1;
+	let paramCount = 0;
+	
+	while (iterator.hasPrevious()) {
+		const token = iterator.previous();
+		switch (token.kind) {
+		case TokenKind.RIGHT_ROUND:
+		case TokenKind.RIGHT_CURLY:
+		case TokenKind.RIGHT_SQUARE:
+			depth++;
+			break;
+		case TokenKind.LEFT_CURLY:
+		case TokenKind.LEFT_SQUARE:
+			depth--;
+			if (depth === 0) {
+				return -1;
+			}
+			break;
+		case TokenKind.LEFT_ROUND:
+			depth--;
+			if (depth === 0) {
+				return paramCount;
+			}
+			break;
+		case TokenKind.COMMA:
+			if (depth === 1) {
+				paramCount++;
+			}
+			break;
+		}
+	}
+
+	return -1;
 }
 
 function getDotRange(iterator: TokenIterator): { start: number, end: number } | undefined {
@@ -244,6 +338,33 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 		return item;
 	}
 
+	
+	if (item.kind === CompletionItemKind.Keyword) {
+		if (noSpaceKeywords.has(item.label)) {
+			return item;
+		}
+
+		item.insertText = item.label + " ";
+
+		const settings = await getDocumentSettings(document.uri);
+		if (settings.completionAutoParantheses && paranthesisKeywords.has(item.label)) {
+			item.insertText += "($0)";
+			item.insertTextFormat = InsertTextFormat.Snippet;
+		}
+
+		return item;
+	}
+
+	if (item.kind === CompletionItemKind.Value) {
+		item.command = {
+			command: 'cursorMove',
+			title: 'Move Cursor',
+			arguments: [{ to: 'right', by: 'character', value: 1 }]
+		};
+
+		return item;
+	}
+
 	const doc = itemKindToDocs.get(item.data)?.get(item.label);
 	if (!doc) {
 		return item;
@@ -263,25 +384,6 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 		return item;
 	}
 
-	const settings = await getDocumentSettings(document.uri);
-
-	if (item.kind === CompletionItemKind.Keyword) {
-		if (noSpaceKeywords.has(item.label)) {
-			return item;
-		}
-
-		item.insertText = item.label + " ";
-
-		if (settings.completionAutoParantheses && paranthesisKeywords.has(item.label)) {
-			item.insertText += "($0)";
-			item.insertTextFormat = InsertTextFormat.Snippet;
-		}
-
-		return item;
-	}
-
-	/** */
-
 	if (shortCut && dotRange) {
 		item.additionalTextEdits = [
 			TextEdit.insert(dotRange.start, doc.append!),
@@ -289,6 +391,7 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 		];
 	}
 
+	const settings = await getDocumentSettings(document.uri);
 	if (!settings.completionAutoParantheses ||
 		item.kind !== CompletionItemKind.Function &&
 		item.kind !== CompletionItemKind.Method

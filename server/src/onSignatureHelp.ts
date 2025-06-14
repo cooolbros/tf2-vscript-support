@@ -22,9 +22,9 @@ export default async function onSignatureHelpHandler(params: SignatureHelpParams
 	
 
 	const position = params.position;
-	const offset = document.offsetAt(position) - 1;
+	const offset = document.offsetAt(position);
 
-	const result = lexer.findTokenAtPosition(offset);
+	const result = lexer.findTokenAtPosition(offset, true);
 	if (result.token && isTokenAComment(result.token)) {
 		return null;
 	}

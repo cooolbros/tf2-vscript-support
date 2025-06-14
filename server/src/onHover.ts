@@ -22,7 +22,7 @@ export default async function onHoverHandler(params: TextDocumentPositionParams)
 
 
 	const position = params.position;
-	const offset = document.offsetAt(position) - 1;
+	const offset = document.offsetAt(position);
 
 	const result = lexer.findTokenAtPosition(offset);
 	if (!result.token || isTokenAComment(result.token) || result.token.kind !== TokenKind.IDENTIFIER) {

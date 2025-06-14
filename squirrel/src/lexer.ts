@@ -959,7 +959,7 @@ export class Lexer {
 		return { kind: keywords.get(value) ?? TokenKind.IDENTIFIER, value };
 	}
 
-	public findTokenAtPosition(offset: number): { token: Token | null, index: number } {
+	public findTokenAtPosition(offset: number, onlyInside: boolean = false): { token: Token | null, index: number } {
 		let left = 0;
 		let right = this.tokens.length - 1;
 
@@ -972,6 +972,10 @@ export class Lexer {
 			} else if (offset >= token.end) {
 				left = mid + 1;
 			} else {
+				if (onlyInside && token.start === offset) {
+					return { token: null, index: mid };
+				}
+
 				return { token: token, index: mid };
 			}
 		}
