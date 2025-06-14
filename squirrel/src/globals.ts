@@ -3697,11 +3697,11 @@ export const events: Docs = new Map([
 	}],
 	["OnGameEvent_achievement_event", {
 		detail: "OnGameEvent_achievement_event(params: table) -> null",
-		desc: "Variables of the `params` table:\n```squirrelDoc\nachievement_name: string\n```\nNon-localized name of achievement.\n```squirrelDoc\ncur_val: int\n```\n# of steps toward achievement.\n```squirrelDoc\nmax_val: int\n```\nTotal # of steps in achievement"
+		desc: "Variables of the `params` table:\n```squirrelDoc\nachievement_name: string\n```\nNon-localized name of achievement.\n```squirrelDoc\ncur_val: int\n```\n\# of steps toward achievement.\n```squirrelDoc\nmax_val: int\n```\nTotal number of steps in achievement"
 	}],
 	["OnGameEvent_achievement_increment", {
 		detail: "OnGameEvent_achievement_increment(params: table) -> null",
-		desc: "Variables of the `params` table:\n```squirrelDoc\nachievement_id: int\n```\nID of achievement that went up.\n```squirrelDoc\ncur_val: int\n```\n# of steps toward achievement.\n```squirrelDoc\nmax_val: int\n```\nTotal # of steps in achievement"
+		desc: "Variables of the `params` table:\n```squirrelDoc\nachievement_id: int\n```\nID of achievement that went up.\n```squirrelDoc\ncur_val: int\n```\n\# of steps toward achievement.\n```squirrelDoc\nmax_val: int\n```\nTotal number of steps in achievement"
 	}],
 	["OnGameEvent_air_dash", {
 		detail: "OnGameEvent_air_dash(params: table) -> null",
@@ -4592,7 +4592,7 @@ export const events: Docs = new Map([
 	}],
 	["OnGameEvent_player_score", {
 		detail: "OnGameEvent_player_score(params: table) -> null",
-		desc: "Players scores changed.\n\n---\nVariables of the `params` table:\n```squirrelDoc\nuserid: int\n```\nUser ID on server.\n```squirrelDoc\nkills: int\n```\n# of kills.\n```squirrelDoc\ndeaths: int\n```\n# of deaths.\n```squirrelDoc\nscore: int\n```\nTotal game score"
+		desc: "Players scores changed.\n\n---\nVariables of the `params` table:\n```squirrelDoc\nuserid: int\n```\nUser ID on server.\n```squirrelDoc\nkills: int\n```\nNumber of kills.\n```squirrelDoc\ndeaths: int\n```\nNumber of deaths.\n```squirrelDoc\nscore: int\n```\nTotal game score"
 	}],
 	["OnGameEvent_player_score_changed", {
 		detail: "OnGameEvent_player_score_changed(params: table) -> null",
@@ -5033,7 +5033,7 @@ export const events: Docs = new Map([
 	}],
 	["OnGameEvent_teamplay_round_win", {
 		detail: "OnGameEvent_teamplay_round_win(params: table) -> null",
-		desc: "Variables of the `params` table:\n```squirrelDoc\nteam: int\n```\nWhich team won the round.\n```squirrelDoc\nwinreason: int\n```\nThe reason the team won.\n```squirrelDoc\nflagcaplimit: int\n```\nIf win reason was flag cap limit, the value of the flag cap limit.\n```squirrelDoc\nfull_round: int\n```\nWas this a full round or a mini-round.\n```squirrelDoc\nround_time: float\n```\nElapsed time of this round.\n```squirrelDoc\nlosing_team_num_caps: int\n```\n# of caps this round by losing team.\n```squirrelDoc\nwas_sudden_death: int\n```\nDid a team win this after entering sudden death"
+		desc: "Variables of the `params` table:\n```squirrelDoc\nteam: int\n```\nWhich team won the round.\n```squirrelDoc\nwinreason: int\n```\nThe reason the team won.\n```squirrelDoc\nflagcaplimit: int\n```\nIf win reason was flag cap limit, the value of the flag cap limit.\n```squirrelDoc\nfull_round: int\n```\nWas this a full round or a mini-round.\n```squirrelDoc\nround_time: float\n```\nElapsed time of this round.\n```squirrelDoc\nlosing_team_num_caps: int\n```\nNumber of caps this round by losing team.\n```squirrelDoc\nwas_sudden_death: int\n```\nDid a team win this after entering sudden death"
 	}],
 	["OnGameEvent_teamplay_setup_finished", {
 		detail: "OnGameEvent_teamplay_setup_finished(params: table) -> null"
@@ -5074,7 +5074,7 @@ export const events: Docs = new Map([
 	}],
 	["OnGameEvent_teamplay_win_panel", {
 		detail: "OnGameEvent_teamplay_win_panel(params: table) -> null",
-		desc: "Variables of the `params` table:\n```squirrelDoc\npanel_style: int\n```\nFor client to determine layout.\n```squirrelDoc\nwinning_team: int\nwinreason: int\n```\nThe reason the team won.\n```squirrelDoc\ncappers: string\n```\nString where each character is a player index of someone that capped.\n```squirrelDoc\nflagcaplimit: int\n```\nIf win reason was flag cap limit, the value of the flag cap limit.\n```squirrelDoc\nblue_score: int\n```\nRed team score.\n```squirrelDoc\nred_score: int\n```\nBlue team score.\n```squirrelDoc\nblue_score_prev: int\n```\nPrevious red team score.\n```squirrelDoc\nred_score_prev: int\n```\nPrevious blue team score.\n```squirrelDoc\nround_complete: int\n```\nIs this a complete round, or the end of a mini-round.\n```squirrelDoc\nrounds_remaining: int\n```\n# of rounds remaining for wining team, if mini-round.\n```squirrelDoc\nplayer_1: int\nplayer_1_points: int\nplayer_2: int\nplayer_2_points: int\nplayer_3: int\nplayer_3_points: int\nkillstreak_player_1: int\nkillstreak_player_1_count: int\ngame_over: int\n```"
+		desc: "Variables of the `params` table:\n```squirrelDoc\npanel_style: int\n```\nFor client to determine layout.\n```squirrelDoc\nwinning_team: int\nwinreason: int\n```\nThe reason the team won.\n```squirrelDoc\ncappers: string\n```\nString where each character is a player index of someone that capped.\n```squirrelDoc\nflagcaplimit: int\n```\nIf win reason was flag cap limit, the value of the flag cap limit.\n```squirrelDoc\nblue_score: int\n```\nRed team score.\n```squirrelDoc\nred_score: int\n```\nBlue team score.\n```squirrelDoc\nblue_score_prev: int\n```\nPrevious red team score.\n```squirrelDoc\nred_score_prev: int\n```\nPrevious blue team score.\n```squirrelDoc\nround_complete: int\n```\nIs this a complete round, or the end of a mini-round.\n```squirrelDoc\nrounds_remaining: int\n```\nNumber of rounds remaining for wining team, if mini-round.\n```squirrelDoc\nplayer_1: int\nplayer_1_points: int\nplayer_2: int\nplayer_2_points: int\nplayer_3: int\nplayer_3_points: int\nkillstreak_player_1: int\nkillstreak_player_1_count: int\ngame_over: int\n```"
 	}],
 	["OnGameEvent_teams_changed", {
 		detail: "OnGameEvent_teams_changed(params: table) -> null"

@@ -992,7 +992,7 @@
 				},
 				{
 					"name": "invalid.illegal.char",
-					"match": "(\\'\\'|\\'[^']{2,}\\')"
+					"match": "\\'[^']*\\'"
 				}
 			]
 		},
@@ -1171,11 +1171,11 @@
 			"patterns": [
 				{
 					"name": "keyword.operator.logical.nut",
-					"match": "(!|&&|\\|\\|)"
+					"match": "!|&&|\\|\\|"
 				},
 				{
 					"name": "keyword.operator.bitwise.nut",
-					"match": "(~|&|\\||\\^|>>>|<<|>>)"
+					"match": "~|&|\\||\\^|>>>|<<|>>"
 				},
 				{
 					"name": "keyword.operator.assignment.nut",
@@ -1183,11 +1183,11 @@
 				},
 				{
 					"name": "keyword.operator.comparison.nut",
-					"match": "(<=>|==|!=|<=|>=|<|>)"
+					"match": "<=>|==|!=|<=|>=|<|>"
 				},
 				{
 					"name": "keyword.operator.assignment.nut",
-					"match": "(\\+=|-=|\\*=|/=|%=|=)"
+					"match": "\\+=|-=|\\*=|/=|%=|="
 				},
 				{
 					"name": "keyword.operator.increment.nut",
@@ -1199,7 +1199,7 @@
 				},
 				{
 					"name": "keyword.operator.arithmetic.nut",
-					"match": "(\\-|\\+|\\*|\\/|%)"
+					"match": "\\-|\\+|\\*|\\/|%"
 				},
 				{
 					"name": "keyword.operator.ternary.nut",
