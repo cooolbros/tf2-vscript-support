@@ -42,7 +42,7 @@ def kind_from_name(name):
     return "unsorted"
 
 properties = {}
-with open("netprops.txt", "r") as input:
+with open("../netprops.txt", "r") as input:
     previous_indent = 0
     append_text = ""
 
@@ -93,7 +93,7 @@ with open("netprops.txt", "r") as input:
 
 
 untyped_properties = {}
-with open("datamaps.txt", "r") as input:
+with open("../datamaps.txt", "r") as input:
     previous_indent = 0
     append_text = ""
 

@@ -1,10 +1,11 @@
 import re
 
-with open("input.txt", "r") as input, open("output.txt", "w") as output:
-    inputs = set()
+with open("../datamaps.txt", "r") as input, open("output.txt", "w") as output:
+    # using dict instead of the set to preserve order
+    inputs = {}
 
     for match in re.finditer(r"Input(\w+)", input.read()):
-        inputs.add(match.group(1))
+        inputs[match.group(1)] = 0
 
-    for input in inputs:
-        output.write(f'"{input}",\n')
+    for item in inputs.keys():
+        output.write(f'"{item}",\n')
