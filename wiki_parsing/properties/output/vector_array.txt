@@ -1,4 +1,6 @@
 "m_Local.m_audio.localSound",
+"m_VehiclePhysics.m_wheelRotation",
+"m_offset",
 "m_ragAngles",
 "m_ragPos",
 "m_ragdollMaxs",

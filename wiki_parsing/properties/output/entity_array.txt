@@ -9,3 +9,4 @@
 "m_hProps",
 "m_hRagWearables",
 "m_hViewModel",
+"m_rgEntities",
