@@ -1,12 +1,12 @@
 import re
+from sortedcontainers import SortedSet
+
 
 with open("../datamaps.txt", "r") as input, open("output.txt", "w") as output:
-    # using dict instead of the set to preserve order
-    inputs = {}
+    inputs = SortedSet()
 
     for match in re.finditer(r"\w* \(Offset \d+\) \(Input\)\(0 Bytes\) - (\w+)", input.read()):
-        inputs[match.group(1)] = 0
+        inputs.add(match.group(1))
 
-    for item in inputs.keys():
-        if item is not None:
-            output.write(f'"{item}",\n')
+    for item in inputs:
+        output.write(f'"{item}",\n')

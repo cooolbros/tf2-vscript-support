@@ -1,4 +1,0 @@
-"m_iszWarnSound",
-"m_iszOverlayNames",
-"m_iszMannVsMachineWaveClassNames",
-"m_iszMannVsMachineWaveClassNames2",

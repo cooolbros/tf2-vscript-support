@@ -1,3 +1,0 @@
-"m_ragAngles",
-"m_ragPos",
-"m_trackPoints",

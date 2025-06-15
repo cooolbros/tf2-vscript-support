@@ -1,6 +1,0 @@
-"m_hMyWeapons",
-"m_hViewModel",
-"",
-"m_hAttachEntity",
-"m_hControlPointEnts",
-"m_hProps",
