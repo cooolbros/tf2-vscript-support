@@ -518,7 +518,7 @@ export class Lexer {
 	}
 
 	private newToken(kind: TokenKind, start: number, end: number, value?: string): Token {
-		if (!value) {
+		if (value === undefined) {
 			value = this.text.slice(start, end);
 		}
 		
