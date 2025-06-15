@@ -1145,7 +1145,8 @@ export const stringCompletions: Set<string>[] = [
 		"BigNet"
 	]),
 	// ATTRIBUTE
-	new Set(["Attack not cancel charge",
+	new Set([
+		"Attack not cancel charge",
 		"Blast radius decreased",
 		"Blast radius increased",
 		"CARD: damage bonus",
@@ -3438,7 +3439,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_Activity",
 		"m_ActualFlags",
 		"m_ArmorValue",
-		"m_AttributeList.m_Attributes.000.m_iAttributeDefinitionIndex",
+		/*"m_AttributeList.m_Attributes.000.m_iAttributeDefinitionIndex",
 		"m_AttributeList.m_Attributes.000.m_iRawValue32",
 		"m_AttributeList.m_Attributes.000.m_nRefundableCurrency",
 		"m_AttributeList.m_Attributes.001.m_iAttributeDefinitionIndex",
@@ -3620,7 +3621,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_AttributeManager.m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.019.m_iAttributeDefinitionIndex",
 		"m_AttributeManager.m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.019.m_iRawValue32",
 		"m_AttributeManager.m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.019.m_nRefundableCurrency",
-		"m_AttributeManager.m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.lengthproxy.lengthprop20",
+		"m_AttributeManager.m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.lengthproxy.lengthprop20",*/
 		"m_AttributeManager.m_Item.m_iAccountID",
 		"m_AttributeManager.m_Item.m_iEntityLevel",
 		"m_AttributeManager.m_Item.m_iEntityQuality",
@@ -3664,7 +3665,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_IdealSchedule",
 		"m_IdealTranslatedActivity",
 		"m_IdealWeaponActivity",
-		"m_Item.m_AttributeList.m_Attributes.000.m_iAttributeDefinitionIndex",
+		/*"m_Item.m_AttributeList.m_Attributes.000.m_iAttributeDefinitionIndex",
 		"m_Item.m_AttributeList.m_Attributes.000.m_iRawValue32",
 		"m_Item.m_AttributeList.m_Attributes.000.m_nRefundableCurrency",
 		"m_Item.m_AttributeList.m_Attributes.001.m_iAttributeDefinitionIndex",
@@ -3785,7 +3786,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.019.m_iAttributeDefinitionIndex",
 		"m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.019.m_iRawValue32",
 		"m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.019.m_nRefundableCurrency",
-		"m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.lengthproxy.lengthprop20",
+		"m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.lengthproxy.lengthprop20",*/
 		"m_Item.m_iAccountID",
 		"m_Item.m_iEntityLevel",
 		"m_Item.m_iEntityQuality",
