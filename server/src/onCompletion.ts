@@ -67,7 +67,9 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 			addCompletionItems(items, ItemKind.DocSnippets, CompletionItemKind.Snippet);
 			return items;
 		}
+		
 
+		// TODO: Detect when user pressed . to go deeper into the netprops
 		if (kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) {
 			const iterator = new TokenIterator(lexer.getTokens(), result.index - 1);
 			const items = stringCompletion(iterator);
