@@ -3871,7 +3871,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_Score",
 		"m_ScriptArrivalActivity",
 		"m_SearchType",
-		"m_Shared.m_ConditionData.lengthproxy.lengthprop131",
+		// "m_Shared.m_ConditionData.lengthproxy.lengthprop131",
 		"m_Shared.m_ConditionList._condition_bits",
 		"m_Shared.m_RoundScoreData.m_iBackstabs",
 		"m_Shared.m_RoundScoreData.m_iBonusPoints",
@@ -4719,7 +4719,7 @@ export const stringCompletions: Set<string>[] = [
 		"overlay_vars.m_AnimOverlay.013.m_nSequence",
 		"overlay_vars.m_AnimOverlay.014.m_nOrder",
 		"overlay_vars.m_AnimOverlay.014.m_nSequence",
-		"overlay_vars.m_AnimOverlay.lengthproxy.lengthprop15",
+		// "overlay_vars.m_AnimOverlay.lengthproxy.lengthprop15",
 		"player_array_element",
 		"touchStamp"
 	]),
