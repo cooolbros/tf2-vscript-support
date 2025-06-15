@@ -2,6 +2,7 @@ import { CompletionItem, CompletionItemKind, CompletionItemTag, InsertTextFormat
 import { Range, TextDocument } from 'vscode-languageserver-textdocument';
 import { documents, getDocumentSettings, documentInfo } from './server';
 import { TokenIterator, TokenKind, globals } from 'squirrel';
+import { StringParam } from 'squirrel/src/globals';
 
 enum ItemKind {
 	Keywords,
@@ -68,11 +69,9 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 			return items;
 		}
 		
-
-		// TODO: Detect when user pressed . to go deeper into the netprops
 		if (kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) {
 			const iterator = new TokenIterator(lexer.getTokens(), result.index - 1);
-			const items = stringCompletion(iterator);
+			const items = stringCompletion(result.token.value, iterator);
 			if (items) {
 				return items;
 			}
@@ -186,7 +185,30 @@ function addCompletionItems(items: CompletionItem[], itemKind: ItemKind, complet
 	}
 }
 
-function stringCompletion(iterator: TokenIterator): CompletionItem[] | null {
+function addStringCompletionItems(items: CompletionItem[], value: string, stringKind: StringParam): void {
+	if (value.length === 0) {
+		addPlainCompletionItems(items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		return;
+	}
+
+	const dot = value.lastIndexOf('.');
+	if (dot === -1) {
+		addPlainCompletionItems(items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		return;
+	}
+	
+	const cutValue = value.slice(0, dot + 1);
+	for (const item of globals.stringCompletions[stringKind]) {
+		if (item.startsWith(cutValue)) {
+			items.push({
+				label: item.slice(cutValue.length),
+				kind: CompletionItemKind.Value,
+			});
+		}
+	}
+}
+
+function stringCompletion(value: string, iterator: TokenIterator): CompletionItem[] | null {
 	if (!iterator.hasPrevious()) {
 		return null;
 	}
@@ -208,7 +230,8 @@ function stringCompletion(iterator: TokenIterator): CompletionItem[] | null {
 		}
 
 		const items: CompletionItem[] = [];
-		addPlainCompletionItems(items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		addStringCompletionItems(items, value, stringKind);
+		
 		return items;
 	}
 
@@ -225,7 +248,8 @@ function stringCompletion(iterator: TokenIterator): CompletionItem[] | null {
 	}
 
 	const items: CompletionItem[] = [];
-	addPlainCompletionItems(items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+	addStringCompletionItems(items, value, stringKind);
+
 	return items;
 }
 
