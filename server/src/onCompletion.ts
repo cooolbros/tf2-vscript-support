@@ -381,6 +381,8 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 	}
 
 	if (item.kind === CompletionItemKind.Value) {
+		item.insertText = item.label.replaceAll('"', '\\"');
+
 		item.command = {
 			command: 'cursorMove',
 			title: 'Move Cursor',
