@@ -13,13 +13,35 @@ kind_to_file = {
     "boolean_array": open("boolean_array.txt", "w"),
     "entity_array": open("entity_array.txt", "w"),
     "vector_array": open("vector_array.txt", "w"),
-    "unsorted": open("unsorted.txt", "w")
+    "unsorted": open("unsorted.txt", "w"),
+    "unsorted_array": open("unsorted_array.txt", "w")
 }
 
 kind_to_file["3"] = kind_to_file["vector"]
+
+def kind_from_name(name):
+    if any(name.startswith(s) for s in ["m_h", "m_next"]):
+        return "entity"
+
+    if any(name.startswith(s) for s in ["m_b", "b"]):
+        return "boolean"
+
+    if any(name.startswith(s) for s in ["m_s", "m_S", "m_isz", "m_psz"]):
+        return "string"
+
+    if name.startswith("m_fl"):
+        return "float"
+
+    if any(name.startswith(s) for s in ["m_i", "m_n", "m_u", "m_f", "m_af", "i", "n", "u", "f"]):
+        return "integer"
+
+
+    if any(name.startswith(s) for s in ["m_v", "v"]):
+        return "vector"
+
+    return "unsorted"
+
 properties = {}
-
-
 with open("netprops.txt", "r") as input:
     previous_indent = 0
     append_text = ""
@@ -51,11 +73,11 @@ with open("netprops.txt", "r") as input:
 
         member_match = re.match(r' *Member: (\w+) \(offset \d+\) \(type (\w+)\) \(bits (\d+)\)', line)
         if member_match:
+            name = member_match.group(1)
             kind = member_match.group(2)
             if kind == "array":
-                continue
-
-            if kind == "integer":
+                kind = kind_from_name(name) + "_array"
+            elif kind == "integer":
                 bits = member_match.group(3)
                 if bits == '21':
                     kind = "entity"
@@ -63,33 +85,11 @@ with open("netprops.txt", "r") as input:
                     kind = "boolean"
 
 
-            if re.match(r'^\d+$', member_match.group(1)):
+            if re.match(r'^\d+$', name):
                 properties[append_text[:-1]] = kind + "_array"
                 continue
 
-            properties[append_text + member_match.group(1)] = kind
-
-
-def kind_from_name(name):
-    if name.startswith("m_b") or name.startswith("b"):
-        return "boolean"
-
-    if name.startswith("m_s") or name.startswith("m_S") or name.startswith("m_isz") or name.startswith("m_psz"):
-        return "string"
-
-    if name.startswith("m_i") or (not name.startswith("m_next") and name.startswith("m_n")) or name.startswith("m_u") or name.startswith("m_f") or name.startswith("m_af") or name.startswith("i") or name.startswith("n") or name.startswith("u") or name.startswith("f"):
-        return "integer"
-
-    if name.startswith("m_fl"):
-        return "float"
-
-    if name.startswith("m_h"):
-        return "entity"
-
-    if name.startswith("m_v") or name.startswith("v_"):
-        return "vector"
-
-    return "unsorted"
+            properties[append_text + name] = kind
 
 
 untyped_properties = {}

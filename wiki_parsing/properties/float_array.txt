@@ -7,6 +7,7 @@
 "m_flNodeHillData",
 "m_flUnlockTimes",
 "m_flCPTimerTimes",
+"m_flOverlayTimes",
 "m_flNextRespawnWave",
 "m_TeamRespawnWaveTimes",
 "m_Shared.m_flItemChargeMeter",
