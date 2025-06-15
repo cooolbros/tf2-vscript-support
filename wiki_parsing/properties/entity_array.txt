@@ -1,4 +1,5 @@
 "m_hMyWeapons",
+"",
 "m_hAttachEntity",
 "m_hControlPointEnts",
 "m_hProps",

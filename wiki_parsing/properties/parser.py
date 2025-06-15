@@ -74,14 +74,14 @@ def kind_from_name(name):
     if name.startswith("m_b") or name.startswith("b"):
         return "boolean"
 
-    if name.startswith("m_i") or name.startswith("m_n") or name.startswith("m_u") or name.startswith("m_f") or name.startswith("m_af") or name.startswith("i") or name.startswith("n") or name.startswith("u") or name.startswith("f"):
+    if name.startswith("m_s") or name.startswith("m_S") or name.startswith("m_isz") or name.startswith("m_psz"):
+        return "string"
+
+    if name.startswith("m_i") or (not name.startswith("m_next") and name.startswith("m_n")) or name.startswith("m_u") or name.startswith("m_f") or name.startswith("m_af") or name.startswith("i") or name.startswith("n") or name.startswith("u") or name.startswith("f"):
         return "integer"
 
     if name.startswith("m_fl"):
         return "float"
-
-    if name.startswith("m_s") or name.startswith("m_S") or name.startswith("m_isz") or name.startswith("m_psz"):
-        return "string"
 
     if name.startswith("m_h"):
         return "entity"
