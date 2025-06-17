@@ -110,6 +110,12 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 			kind: CompletionItemKind.Keyword,
 			data: { uri: document.uri }
 		}];
+	} else if (kind === TokenKind.FUNCTION) {
+		return [{
+			label: "constructor",
+			kind: CompletionItemKind.Keyword,
+			data: { uri: document.uri }
+		}];
 	} else if (kind) {
 		return [];
 	}
@@ -398,7 +404,8 @@ const paranthesisKeywords = new Set<string>([
 	"while",
 	"foreach",
 	"switch",
-	"function"
+	"function",
+	"constructor"
 ]);
 
 // Checks whether the function is used as a statement or as an expression
@@ -440,18 +447,13 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 	}
 
 	if (item.kind === CompletionItemKind.Keyword) {
-		if (noSpaceKeywords.has(item.label)) {
-			return item;
+		item.insertText = item.label;
+		if (!noSpaceKeywords.has(item.label)) {
+			item.insertText += " ";
 		}
-
-		if (item.label === "function") {
-			item.insertText = item.label;
-			if (!functionParanthesis(document)) {
-				item.insertText += " ";
-				return item;
-			}
-		} else {	
-			item.insertText = item.label + " ";
+		
+		if (item.label === "function" && !functionParanthesis(document)) {
+			return item;
 		}
 
 		const settings = await getDocumentSettings(document.uri);
