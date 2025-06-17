@@ -756,6 +756,7 @@
 "m_iHealth",
 "m_iHighestUpgradeLevel",
 "m_iIKCounter",
+"m_iInitialTeamNum",
 "m_iInputFilter",
 "m_iIntegerValue",
 "m_iInteractionPlaying",

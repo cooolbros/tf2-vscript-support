@@ -3489,6 +3489,7 @@ m_Collision.m_vecMaxsPreScaled: vector
 m_Shared.m_ConditionData.049.m_pProvider: instance
 m_Shared.m_ConditionData.042.m_pProvider: instance
 m_EnvWindShared.m_iInitialWindDir: integer
+m_iInitialTeamNum: integer
 m_iFrags: integer
 m_ParameterHeadPitch: integer
 m_Item.m_NetworkedDynamicAttributesForDemos.m_Attributes.017.m_iRawValue32: integer

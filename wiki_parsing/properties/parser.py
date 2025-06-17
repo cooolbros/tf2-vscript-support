@@ -17,7 +17,7 @@ kind_to_file = {
     "vector_array": open("output/vector_array.txt", "w"),
 }
 
-with open("properties.txt", "r") as input:
+with open("../shared/properties.txt", "r") as input:
     properties = SortedDict()
 
     for line in input:

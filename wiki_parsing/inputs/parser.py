@@ -2,7 +2,7 @@ import re
 from sortedcontainers import SortedSet
 
 
-with open("../datamaps.txt", "r") as input, open("output.txt", "w") as output:
+with open("../shared/datamaps.txt", "r") as input, open("output.txt", "w") as output:
     inputs = SortedSet()
 
     for match in re.finditer(r"\w* \(Offset \d+\) \(Input\)\(0 Bytes\) - (\w+)", input.read()):
