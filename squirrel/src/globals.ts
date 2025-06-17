@@ -5454,7 +5454,6 @@ export const stringCompletions: Set<string>[] = [
 		"m_iHealingAssist",
 		"m_iHealth",
 		"m_iHighestUpgradeLevel",
-		"m_iInitialTeamNum",
 		"m_iIKCounter",
 		"m_iInputFilter",
 		"m_iIntegerValue",
