@@ -1,10 +1,17 @@
-import { CompletionItem, CompletionItemKind, CompletionItemTag, InsertTextFormat, MarkupKind, TextDocumentPositionParams, TextEdit } from 'vscode-languageserver';
+import { CompletionItem, CompletionItemKind, CompletionItemTag, InsertTextFormat, MarkupKind, Position, TextDocumentPositionParams, TextEdit } from 'vscode-languageserver';
 import { Range, TextDocument } from 'vscode-languageserver-textdocument';
 import { documents, getDocumentSettings, documentInfo } from './server';
 import { TokenIterator, TokenKind, globals } from 'squirrel';
 import { StringParam } from 'squirrel/src/globals';
 
-enum ItemKind {
+function convertOffsetsToRange(document: TextDocument, start: number, end: number): Range {
+	return {
+		start: document.positionAt(start),
+		end: document.positionAt(end)
+	}
+}
+
+enum DocKind {
 	Keywords,
 	Methods,
 	DeprecatedMethods,
@@ -18,26 +25,25 @@ enum ItemKind {
 	DocSnippets
 }
 
-const itemKindToDocs = new Map<ItemKind, globals.Docs>([
-	[ItemKind.Methods, globals.methods],
-	[ItemKind.DeprecatedMethods, globals.deprecatedMethods],
-	[ItemKind.Functions, globals.functions],
-	[ItemKind.DeprecatedFunctions, globals.deprecatedFunctions],
-	[ItemKind.Events, globals.events],
-	[ItemKind.BuiltInConstants, globals.builtInConstants],
-	[ItemKind.BuiltInVariables, globals.builtInVariables],
-	[ItemKind.InstancesMethods, globals.otherMethods],
-	[ItemKind.InstancesVariables, globals.otherVariables],
-	[ItemKind.DocSnippets, globals.docSnippets]
+const docKindToDocs = new Map<DocKind, globals.Docs>([
+	[DocKind.Methods, globals.methods],
+	[DocKind.DeprecatedMethods, globals.deprecatedMethods],
+	[DocKind.Functions, globals.functions],
+	[DocKind.DeprecatedFunctions, globals.deprecatedFunctions],
+	[DocKind.Events, globals.events],
+	[DocKind.BuiltInConstants, globals.builtInConstants],
+	[DocKind.BuiltInVariables, globals.builtInVariables],
+	[DocKind.InstancesMethods, globals.otherMethods],
+	[DocKind.InstancesVariables, globals.otherVariables],
+	[DocKind.DocSnippets, globals.docSnippets]
 ]);
 
-// track the document the completion items were added in to later use it in resolve
-let document: TextDocument | undefined;
-let dotRange: Range | undefined;
-let shortCut = false;
+type CompletionCache = Range | null;
+
+const completionCache = new Map<string, CompletionCache>();
 
 export async function onCompletionHandler(params: TextDocumentPositionParams): Promise<CompletionItem[]> {
-	document = documents.get(params.textDocument.uri);
+	const document = documents.get(params.textDocument.uri);
 	if (!document) {
 		return [];
 	}
@@ -51,12 +57,14 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	if (!info) {
 		return [];
 	}
-	const { lexer } = info;
+	const lexer = info.lexer;
+
+	completionCache.set(document.uri, null);
 
 	const position = params.position;
-	const offset = document.offsetAt(position) - 1;
+	const offset = document.offsetAt(position);
 
-	const result = lexer.findTokenAtPosition(offset);
+	const result = lexer.findTokenAtPosition(offset - 1);
 	if (result.token) {
 		const kind = result.token.kind;
 		if (kind === TokenKind.LINE_COMMENT || kind === TokenKind.BLOCK_COMMENT) {
@@ -65,14 +73,15 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 
 		if (kind === TokenKind.DOC) {
 			const items: CompletionItem[] = [];
-			addCompletionItems(items, ItemKind.DocSnippets, CompletionItemKind.Snippet);
+			addCompletionItems(document.uri, items, DocKind.DocSnippets, CompletionItemKind.Snippet);
 			return items;
 		}
 		
-		if (kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) {
+		if ((kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) && result.token.end != offset) {
 			const iterator = new TokenIterator(lexer.getTokens(), result.index - 1);
-			const items = stringCompletion(result.token.value, iterator);
+			const items = stringCompletion(document.uri, result.token.value, iterator);
 			if (items) {
+				completionCache.set(document.uri, convertOffsetsToRange(document, result.token.start, result.token.end));
 				return items;
 			}
 		}
@@ -86,32 +95,27 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	}
 	iterator.setIndex(result.index);
 
-	const range = getDotRange(iterator);
-	shortCut = false;
+	const dotRange = getDotRange(iterator, offset);
 
-	if (range) {
-		dotRange = {
-			start: document.positionAt(range.start),
-			end: document.positionAt(range.end)
-		};
+	if (dotRange) {
 		const name = iterator.readIdentity(false);
 		if (name) {
 			const methods = globals.instancesMethods.get(name);
 			if (methods) {
-				addCompletionItems(items, ItemKind.InstancesMethods, CompletionItemKind.Method, methods);
+				addCompletionItems(document.uri, items, DocKind.InstancesMethods, CompletionItemKind.Method, methods);
 				return items;
 			}
 
 			const variables = globals.instancesVariables.get(name);
 			if (variables) {
-				addCompletionItems(items, ItemKind.InstancesVariables, CompletionItemKind.EnumMember, variables);
+				addCompletionItems(document.uri, items, DocKind.InstancesVariables, CompletionItemKind.EnumMember, variables);
 				return items;
 			}
 
 			// If we have not found this instance name in our saved completions then we assume it has every other method
-			addCompletionItems(items, ItemKind.Methods, CompletionItemKind.Method);
-			addCompletionItems(items, ItemKind.Events, CompletionItemKind.Event);
-			addCompletionItems(items, ItemKind.DeprecatedMethods, CompletionItemKind.Method);
+			addCompletionItems(document.uri, items, DocKind.Methods, CompletionItemKind.Method);
+			addCompletionItems(document.uri, items, DocKind.Events, CompletionItemKind.Event);
+			addCompletionItems(document.uri, items, DocKind.DeprecatedMethods, CompletionItemKind.Method);
 
 			return items;
 		}
@@ -121,57 +125,60 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 
 		const lastToken = iterator.next();
 		if (!lastToken || lastToken.kind !== TokenKind.RIGHT_ROUND && lastToken.kind !== TokenKind.RIGHT_SQUARE) {
-			shortCut = true;
-			addCompletionItems(items, ItemKind.InstancesMethods, CompletionItemKind.Method);
-			addCompletionItems(items, ItemKind.InstancesVariables, CompletionItemKind.EnumMember);
+			addCompletionItems(document.uri, items, DocKind.InstancesMethods, CompletionItemKind.Method);
+			addCompletionItems(document.uri, items, DocKind.InstancesVariables, CompletionItemKind.EnumMember);
+			completionCache.set(document.uri, convertOffsetsToRange(document, dotRange.start, dotRange.end));
 
 			return items;
 		}
 
-		addCompletionItems(items, ItemKind.Methods, CompletionItemKind.Method);
-		addCompletionItems(items, ItemKind.Events, CompletionItemKind.Event);
-		addCompletionItems(items, ItemKind.DeprecatedMethods, CompletionItemKind.Method);
+		addCompletionItems(document.uri, items, DocKind.Methods, CompletionItemKind.Method);
+		addCompletionItems(document.uri, items, DocKind.Events, CompletionItemKind.Event);
+		addCompletionItems(document.uri, items, DocKind.DeprecatedMethods, CompletionItemKind.Method);
 
 		return items;
 	}
 
 
-	addCompletionItems(items, ItemKind.Functions, CompletionItemKind.Function);
-	addCompletionItems(items, ItemKind.Events, CompletionItemKind.Event);
-	addCompletionItems(items, ItemKind.DeprecatedFunctions, CompletionItemKind.Function);
+	addCompletionItems(document.uri, items, DocKind.Functions, CompletionItemKind.Function);
+	addCompletionItems(document.uri, items, DocKind.Events, CompletionItemKind.Event);
+	addCompletionItems(document.uri, items, DocKind.DeprecatedFunctions, CompletionItemKind.Function);
 
-	addCompletionItems(items, ItemKind.BuiltInConstants, CompletionItemKind.Constant);
-	addCompletionItems(items, ItemKind.BuiltInVariables, CompletionItemKind.Variable);
+	addCompletionItems(document.uri, items, DocKind.BuiltInConstants, CompletionItemKind.Constant);
+	addCompletionItems(document.uri, items, DocKind.BuiltInVariables, CompletionItemKind.Variable);
 
 	// It's possible to rescope your methods so that they appear as global functions
 	// In this case we always stick to show available methods which are bound to instances
-	addCompletionItems(items, ItemKind.InstancesMethods, CompletionItemKind.Method);
-	addCompletionItems(items, ItemKind.InstancesVariables, CompletionItemKind.EnumMember);
+	addCompletionItems(document.uri, items, DocKind.InstancesMethods, CompletionItemKind.Method);
+	addCompletionItems(document.uri, items, DocKind.InstancesVariables, CompletionItemKind.EnumMember);
 
-	addPlainCompletionItems(items, CompletionItemKind.Keyword, globals.keywords);
+	addPlainCompletionItems(document.uri, items, CompletionItemKind.Keyword, globals.keywords);
 
 	return items;
 }
 
-function addPlainCompletionItems(items: CompletionItem[], completionItemKind: CompletionItemKind, docs: Set<string>) {
+function addPlainCompletionItems(uri: string, items: CompletionItem[], completionItemKind: CompletionItemKind, docs: Set<string>) {
 	for (const item of docs) {
 		items.push({
 			label: item,
 			kind: completionItemKind,
+			data: {
+				uri
+			}
 		});
 	}
 }
 
-function addCompletionItems(items: CompletionItem[], itemKind: ItemKind, completionItemKind: CompletionItemKind, docs?: globals.Docs): void {
+function addCompletionItems(uri: string, items: CompletionItem[], docKind: DocKind, completionItemKind: CompletionItemKind, docs?: globals.Docs): void {
 	if (!docs) {
-		docs = itemKindToDocs.get(itemKind);
+		docs = docKindToDocs.get(docKind);
 		if (!docs) {
 			return;
 		}
 	}
 
 	const tags: CompletionItemTag[] = [];
-	if (itemKind === ItemKind.DeprecatedFunctions || itemKind === ItemKind.DeprecatedMethods) {
+	if (docKind === DocKind.DeprecatedFunctions || docKind === DocKind.DeprecatedMethods) {
 		tags.push(CompletionItemTag.Deprecated);
 	}
 
@@ -180,20 +187,23 @@ function addCompletionItems(items: CompletionItem[], itemKind: ItemKind, complet
 			label: label,
 			kind: completionItemKind,
 			tags: tags,
-			data: itemKind,
+			data: {
+				uri,
+				docKind
+			}
 		});
 	}
 }
 
-function addStringCompletionItems(items: CompletionItem[], value: string, stringKind: StringParam): void {
+function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringParam): void {
 	if (value.length === 0) {
-		addPlainCompletionItems(items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
 		return;
 	}
 
 	const dot = value.lastIndexOf('.');
 	if (dot === -1) {
-		addPlainCompletionItems(items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
 		return;
 	}
 	
@@ -203,12 +213,15 @@ function addStringCompletionItems(items: CompletionItem[], value: string, string
 			items.push({
 				label: item.slice(cutValue.length),
 				kind: CompletionItemKind.Value,
+				data: {
+					uri
+				}
 			});
 		}
 	}
 }
 
-function stringCompletion(value: string, iterator: TokenIterator): CompletionItem[] | null {
+function stringCompletion(uri: string, value: string, iterator: TokenIterator): CompletionItem[] | null {
 	if (!iterator.hasPrevious()) {
 		return null;
 	}
@@ -230,7 +243,7 @@ function stringCompletion(value: string, iterator: TokenIterator): CompletionIte
 		}
 
 		const items: CompletionItem[] = [];
-		addStringCompletionItems(items, value, stringKind);
+		addStringCompletionItems(uri, items, value, stringKind);
 		
 		return items;
 	}
@@ -248,7 +261,7 @@ function stringCompletion(value: string, iterator: TokenIterator): CompletionIte
 	}
 
 	const items: CompletionItem[] = [];
-	addStringCompletionItems(items, value, stringKind);
+	addStringCompletionItems(uri, items, value, stringKind);
 
 	return items;
 }
@@ -308,21 +321,21 @@ function readParamCount(iterator: TokenIterator): number {
 	return -1;
 }
 
-function getDotRange(iterator: TokenIterator): { start: number, end: number } | undefined {
+function getDotRange(iterator: TokenIterator, offset: number): { start: number, end: number } | null {
 	if (!iterator.hasPrevious()) {
-		return;
+		return null;
 	}
 
 	let token = iterator.previous();
 	if (token.kind === TokenKind.DOT) {
-		return { start: token.start, end: token.end };
+		return { start: token.start, end: offset };
 	}
 	if (token.kind !== TokenKind.IDENTIFIER) {
-		return;
+		return null;
 	}
 
 	if (!iterator.hasPrevious()) {
-		return;
+		return null;
 	}
 
 	const end = token.start;
@@ -331,8 +344,15 @@ function getDotRange(iterator: TokenIterator): { start: number, end: number } | 
 		return { start: token.start, end };
 	}
 
-	return;
+	return null;
 }
+
+
+
+
+
+
+
 
 const noSpaceKeywords = new Set<string>([
 	"base",
@@ -359,11 +379,11 @@ const paranthesisKeywords = new Set<string>([
 ]);
 
 export async function onCompletionResolveHandler(item: CompletionItem): Promise<CompletionItem> {
+	const document = documents.get(item.data.uri);
 	if (!document) {
 		return item;
 	}
 
-	
 	if (item.kind === CompletionItemKind.Keyword) {
 		if (noSpaceKeywords.has(item.label)) {
 			return item;
@@ -381,18 +401,47 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 	}
 
 	if (item.kind === CompletionItemKind.Value) {
+		/*
+		const range = completionCache.get(document.uri)!;
+		
+		item.insertText = `"${item.label.replaceAll('"', '\\"')}"`;
+		const startingQuote = {
+			start: range.start,
+			end: {
+				line: range.start.line,
+				character: range.start.character + 1
+			}
+		}
+		const endQuote = {
+			start: {
+				line: range.end.line,
+				character: range.end.character - 1
+			},
+			end: range.end
+		}
+		item.additionalTextEdits = [
+			TextEdit.del(startingQuote),
+			TextEdit.del(endQuote)
+		]
+		*/
 		item.insertText = item.label.replaceAll('"', '\\"');
-
-		item.command = {
-			command: 'cursorMove',
-			title: 'Move Cursor',
-			arguments: [{ to: 'right', by: 'character', value: 1 }]
-		};
-
+		
+		let snippet_id = 0;
+		item.insertText = item.insertText.replace(/\d+/g, (match) => `\${${snippet_id++}:${match}}`);
+		if (snippet_id != 0) {
+			item.insertTextFormat = InsertTextFormat.Snippet;
+		} else {
+			item.command = {
+				command: 'cursorMove',
+				title: 'Move Cursor',
+				arguments: [{ to: 'right', by: 'character', value: 1 }]
+			}
+		}
+		
 		return item;
 	}
 
-	const doc = itemKindToDocs.get(item.data)?.get(item.label);
+	const doc = docKindToDocs.get(item.data.docKind)?.get(item.label);
 	if (!doc) {
 		return item;
 	}
@@ -411,7 +460,8 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 		return item;
 	}
 
-	if (shortCut && dotRange) {
+	const dotRange = completionCache.get(document.uri)!;
+	if (dotRange) {
 		item.additionalTextEdits = [
 			TextEdit.insert(dotRange.start, doc.append!),
 			TextEdit.del(dotRange),
