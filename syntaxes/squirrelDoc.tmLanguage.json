@@ -17,11 +17,19 @@
 			}
 		},
 		{
-			"match": "—.*",
-			"name": ""
+			"name": "constant.language.boolean.true.nut",
+			"match": "(?<![_A-Za-z])true\\b"
 		},
 		{
-			"match": "\\b(int|float|bool|number|handle|table|enum|any|array|string|function|ehandle|object|class|weakreference|Vector|QAngle|Vector2D|Vector4D|blob|Quaternion|Convars|Entities|EntityOutputs|NavMesh|NetProps|PlayerVoiceListener|CBaseEntity|CBaseAnimating|CBaseCombatWeapon|CBaseFlex|CBaseCombatCharacter|CBasePlayer|CBaseMultiplayerPlayer|CEconEntity|CTFPlayer|CTFBot|CTFBaseBoss|CEntities|CTFNavArea|CNavMesh|CNetPropManager|CScriptEntityOutputs|CScriptKeyValues|CPlayerVoiceListener|CEnvEntityMaker|CPointTemplate|CFuncTrackTrain|CPointScriptTemplate|CSceneEntity|CCallChainer|CSimpleCallChainer|NextBotCombatCharacter|INextBotComponent|ILocomotion|LateBinder|regexp)\\b",
+			"name": "constant.language.boolean.false.nut",
+			"match": "(?<![_A-Za-z])false\\b"
+		},
+		{
+			"name": "constant.language.null.nut",
+			"match": "(?<![_A-Za-z])null\\b"
+		},
+		{
+			"match": "(?<![_A-Za-z])(Vector|QAngle|Vector2D|Vector4D|Quaternion|Convars|Entities|EntityOutputs|NavMesh|NetProps|PlayerVoiceListener|CBaseEntity|CBaseAnimating|CBaseCombatWeapon|CBaseFlex|CBaseCombatCharacter|CBasePlayer|CBaseMultiplayerPlayer|CEconEntity|CTFPlayer|CTFBot|CTFBaseBoss|CEntities|CTFNavArea|CNavMesh|CNetPropManager|CScriptEntityOutputs|CScriptKeyValues|CPlayerVoiceListener|CEnvEntityMaker|CPointTemplate|CFuncTrackTrain|CPointScriptTemplate|CSceneEntity|CCallChainer|CSimpleCallChainer|NextBotCombatCharacter|INextBotComponent|ILocomotion|LateBinder|regexp)\\b(?!\\s*(?:=|<-|:|->))",
 			"name": "entity.name.type.class.nut"
 		},
 		{
@@ -29,11 +37,7 @@
 			"name": "entity.name.type.enum.nut"
 		},
 		{
-			"match": "\\b(false|true|null|void)\\b",
-			"name": "variable.language"
-		},
-		{
-			"match": "(?<=(?:->|:)\\s*)\\w+",
+			"match": "(?<=(?:->|:)\\s*)[_A-Za-z]\\w*",
 			"name": "entity.name.type.class.nut"
 		},
 		{
@@ -77,15 +81,27 @@
 			"name": "punctuation.separator.comma.nut"
 		},
 		{
-			"match": "\\.",
-			"name": "punctuation.accessor.nut"
+			"match": "(\\w+)?(\\.)",
+			"captures": {
+				"1": { "name": "entity.name.type.class.nut" },
+				"2": { "name": "punctuation.accessor.nut" }
+			}
 		},
+		
 		{
 			"match": ":",
 			"name": "punctuation.colon.nut"
 		},
 		{
-			"match": "\\b[_A-Za-z][\\w]*\\b",
+			"match": "(?<![_A-Za-z])[_A-Z][_A-Z0-9]*\\b",
+			"name": "variable.other.constant.nut"
+		},
+		{
+			"match": "(?<![_A-Za-z])(_charsize_|_floatsize_|_intsize_|_version_|_versionnumber_|self|__vrefs|__vname|activator|caller|kHoliday_None|kHoliday_TFBirthday|kHoliday_Halloween|kHoliday_Christmas|kHoliday_CommunityUpdate|kHoliday_EOTL|kHoliday_Valentines|kHoliday_MeetThePyro|kHoliday_FullMoon|kHoliday_HalloweenOrFullMoon|kHoliday_HalloweenOrFullMoonOrValentines|kHoliday_AprilFools|kHoliday_Soldier|kHoliday_Summer|kHolidayCount|kRenderFxNone|kRenderFxPulseSlow|kRenderFxPulseFast|kRenderFxPulseSlowWide|kRenderFxPulseFastWide|kRenderFxFadeSlow|kRenderFxFadeFast|kRenderFxSolidSlow|kRenderFxSolidFast|kRenderFxStrobeSlow|kRenderFxStrobeFast|kRenderFxStrobeFaster|kRenderFxFlickerSlow|kRenderFxFlickerFast|kRenderFxNoDissipation|kRenderFxDistort|kRenderFxHologram|kRenderFxExplode|kRenderFxGlowShell|kRenderFxClampMinScale|kRenderFxEnvRain|kRenderFxEnvSnow|kRenderFxSpotlight|kRenderFxRagdoll|kRenderFxPulseFastWider|kRenderFxMax|kRenderNormal|kRenderTransColor|kRenderTransTexture|kRenderGlow|kRenderTransAlpha|kRenderTransAdd|kRenderEnvironmental|kRenderTransAddFrameBlend|kRenderTransAlphaAdd|kRenderWorldGlow|kRenderNone|kRenderModeCount|Zero|Epsilon|GoldenRatio|One|Sqrt2|Sqrt3|E|Pi|Tau|ConstantNamingConvention)\\b",
+			"name": "variable.other.constant.nut"
+		},
+		{
+			"match": "(?<![_A-Za-z])[_A-Za-z]\\w*\\b",
 			"name": "variable.other.nut"
 		}
 	],

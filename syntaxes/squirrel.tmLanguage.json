@@ -1084,7 +1084,7 @@
 					"name": "storage.modifier.extends.nut"
 				},
 				{
-					"match": "(?<![_A-Za-z])(string|Vector|QAngle|Vector2D|Vector4D|Quaternion|Convars|Entities|EntityOutputs|NavMesh|NetProps|PlayerVoiceListener|CBaseEntity|CBaseAnimating|CBaseCombatWeapon|CBaseFlex|CBaseCombatCharacter|CBasePlayer|CBaseMultiplayerPlayer|CEconEntity|CTFPlayer|CTFBot|CTFBaseBoss|CEntities|CTFNavArea|CNavMesh|CNetPropManager|CScriptEntityOutputs|CScriptKeyValues|CPlayerVoiceListener|CEnvEntityMaker|CPointTemplate|CFuncTrackTrain|CPointScriptTemplate|CSceneEntity|CCallChainer|CSimpleCallChainer|NextBotCombatCharacter|INextBotComponent|ILocomotion|LateBinder|regexp)\\b(?!\\s*(?:=|<-))",
+					"match": "(?<![_A-Za-z])(Vector|QAngle|Vector2D|Vector4D|Quaternion|Convars|Entities|EntityOutputs|NavMesh|NetProps|PlayerVoiceListener|CBaseEntity|CBaseAnimating|CBaseCombatWeapon|CBaseFlex|CBaseCombatCharacter|CBasePlayer|CBaseMultiplayerPlayer|CEconEntity|CTFPlayer|CTFBot|CTFBaseBoss|CEntities|CTFNavArea|CNavMesh|CNetPropManager|CScriptEntityOutputs|CScriptKeyValues|CPlayerVoiceListener|CEnvEntityMaker|CPointTemplate|CFuncTrackTrain|CPointScriptTemplate|CSceneEntity|CCallChainer|CSimpleCallChainer|NextBotCombatCharacter|INextBotComponent|ILocomotion|LateBinder|regexp)\\b(?!\\s*(?:=|<-))",
 					"name": "entity.name.type.class.nut"
 				},
 				{
