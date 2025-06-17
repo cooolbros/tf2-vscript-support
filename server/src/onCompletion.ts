@@ -1,7 +1,7 @@
 import { CompletionItem, CompletionItemKind, CompletionItemTag, InsertTextFormat, MarkupKind, Position, TextDocumentPositionParams, TextEdit } from 'vscode-languageserver';
 import { Range, TextDocument } from 'vscode-languageserver-textdocument';
 import { documents, getDocumentSettings, documentInfo } from './server';
-import { TokenIterator, TokenKind, globals } from 'squirrel';
+import { Token, TokenIterator, TokenKind, globals } from 'squirrel';
 import { StringParam } from 'squirrel/src/globals';
 
 function convertOffsetsToRange(document: TextDocument, start: number, end: number): Range {
@@ -38,7 +38,13 @@ const docKindToDocs = new Map<DocKind, globals.Docs>([
 	[DocKind.DocSnippets, globals.docSnippets]
 ]);
 
-type CompletionCache = Range | null;
+type CompletionCache = {
+	modifyRange?: Range;
+	searchResult: {
+		token: Token | null;
+		index: number;
+	}
+}
 
 const completionCache = new Map<string, CompletionCache>();
 
@@ -58,13 +64,19 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 		return [];
 	}
 	const lexer = info.lexer;
-
-	completionCache.set(document.uri, null);
-
+	
 	const position = params.position;
 	const offset = document.offsetAt(position);
 
 	const result = lexer.findTokenAtPosition(offset - 1);
+
+
+	const cache: CompletionCache = {
+		searchResult: result
+	}
+	completionCache.set(document.uri, cache);
+
+
 	if (result.token) {
 		const kind = result.token.kind;
 		if (kind === TokenKind.LINE_COMMENT || kind === TokenKind.BLOCK_COMMENT) {
@@ -81,7 +93,7 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 			const iterator = new TokenIterator(lexer.getTokens(), result.index - 1);
 			const items = stringCompletion(document.uri, result.token.value, iterator);
 			if (items) {
-				completionCache.set(document.uri, convertOffsetsToRange(document, result.token.start, result.token.end));
+				cache.modifyRange = convertOffsetsToRange(document, result.token.start, result.token.end);
 				return items;
 			}
 		}
@@ -90,9 +102,18 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	const items: CompletionItem[] = [];
 	
 	const iterator = new TokenIterator(lexer.getTokens(), result.index);
-	if (checkForDeclaration(iterator)) {
+
+	const kind = declarationKind(iterator);
+	if (kind === TokenKind.LOCAL) {
+		return [{
+			label: "function",
+			kind: CompletionItemKind.Keyword,
+			data: { uri: document.uri }
+		}];
+	} else if (kind) {
 		return [];
 	}
+
 	iterator.setIndex(result.index);
 
 	const dotRange = getDotRange(iterator, offset);
@@ -127,7 +148,7 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 		if (!lastToken || lastToken.kind !== TokenKind.RIGHT_ROUND && lastToken.kind !== TokenKind.RIGHT_SQUARE) {
 			addCompletionItems(document.uri, items, DocKind.InstancesMethods, CompletionItemKind.Method);
 			addCompletionItems(document.uri, items, DocKind.InstancesVariables, CompletionItemKind.EnumMember);
-			completionCache.set(document.uri, convertOffsetsToRange(document, dotRange.start, dotRange.end));
+			cache.modifyRange = convertOffsetsToRange(document, dotRange.start, dotRange.end);
 
 			return items;
 		}
@@ -213,9 +234,7 @@ function addStringCompletionItems(uri: string, items: CompletionItem[], value: s
 			items.push({
 				label: item.slice(cutValue.length),
 				kind: CompletionItemKind.Value,
-				data: {
-					uri
-				}
+				data: { uri }
 			});
 		}
 	}
@@ -266,23 +285,27 @@ function stringCompletion(uri: string, value: string, iterator: TokenIterator): 
 	return items;
 }
 
-function checkForDeclaration(iterator: TokenIterator): boolean {
+function declarationKind(iterator: TokenIterator): TokenKind | null {
 	if (!iterator.hasPrevious()) {
-		return false;
+		return null;
 	}
 
 	let token = iterator.previous();
 	if (token.kind === TokenKind.LOCAL || token.kind === TokenKind.CONST || token.kind === TokenKind.FUNCTION) {
-		return true;
+		return token.kind;
 	}
 	
 	if (token.kind !== TokenKind.IDENTIFIER || !iterator.hasPrevious()) {
-		return false;
+		return null;
 	}
 
 	token = iterator.previous();
 
-	return token.kind === TokenKind.LOCAL || token.kind === TokenKind.CONST || token.kind === TokenKind.FUNCTION;
+	if (token.kind === TokenKind.LOCAL || token.kind === TokenKind.CONST || token.kind === TokenKind.FUNCTION) {
+		return token.kind;
+	}
+
+	return null;
 }
 
 function readParamCount(iterator: TokenIterator): number {
@@ -362,7 +385,6 @@ const noSpaceKeywords = new Set<string>([
 	"continue",
 	"default",
 	"false",
-	"function",
 	"false",
 	"return",
 	"this",
@@ -375,8 +397,41 @@ const paranthesisKeywords = new Set<string>([
 	"for",
 	"while",
 	"foreach",
-	"switch"
+	"switch",
+	"function"
 ]);
+
+// Checks whether the function is used as a statement or as an expression
+function functionParanthesis(document: TextDocument): boolean {
+	const info = documentInfo.get(document.uri);
+	if (!info) {
+		return false;
+	}
+	const lexer = info.lexer;
+
+	const result = completionCache.get(document.uri)!.searchResult;
+	const iterator = new TokenIterator(lexer.getTokens(), result.index);
+
+	if (!iterator.hasPrevious()) {
+		return false;
+	}
+
+	let token = iterator.previous();
+
+	if (token.kind === TokenKind.IDENTIFIER || token.kind === TokenKind.FUNCTION) {
+		if (!iterator.hasPrevious()) {
+			return false;
+		}
+		
+		token = iterator.previous();
+	} 
+
+	if (token.kind === TokenKind.SEMICOLON || token.kind === TokenKind.LINE_FEED) {
+		return false;
+	}
+
+	return true;
+}
 
 export async function onCompletionResolveHandler(item: CompletionItem): Promise<CompletionItem> {
 	const document = documents.get(item.data.uri);
@@ -389,7 +444,15 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 			return item;
 		}
 
-		item.insertText = item.label + " ";
+		if (item.label === "function") {
+			item.insertText = item.label;
+			if (!functionParanthesis(document)) {
+				item.insertText += " ";
+				return item;
+			}
+		} else {	
+			item.insertText = item.label + " ";
+		}
 
 		const settings = await getDocumentSettings(document.uri);
 		if (settings.completionAutoParantheses && paranthesisKeywords.has(item.label)) {
@@ -460,7 +523,7 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 		return item;
 	}
 
-	const dotRange = completionCache.get(document.uri)!;
+	const dotRange = completionCache.get(document.uri)!.modifyRange;
 	if (dotRange) {
 		item.additionalTextEdits = [
 			TextEdit.insert(dotRange.start, doc.append!),
