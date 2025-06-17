@@ -5109,7 +5109,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_NodeData.nTargetWCNodeID",
 		"m_NodeData.nWCNodeID",
 		"m_NumBeams[0]",
-		"m_NumBeams[1]",
+		// "m_NumBeams[1]",
 		"m_OutColor1",
 		"m_OutColor2",
 		"m_ParameterBodyYaw",
@@ -5387,13 +5387,13 @@ export const stringCompletions: Set<string>[] = [
 		"m_iConnectionState",
 		"m_iConsecutiveShots",
 		"m_iControlPointParents",
-		"m_iControlPointParents[0]",
+		"m_iControlPointParents[0]",/*
 		"m_iControlPointParents[1]",
 		"m_iControlPointParents[2]",
 		"m_iControlPointParents[3]",
 		"m_iControlPointParents[4]",
 		"m_iControlPointParents[5]",
-		"m_iControlPointParents[6]",
+		"m_iControlPointParents[6]",*/
 		"m_iCurrencyCollected",
 		"m_iCurrencyCollectedForRespec",
 		"m_iCurrentFade",
@@ -5454,6 +5454,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iHealingAssist",
 		"m_iHealth",
 		"m_iHighestUpgradeLevel",
+		"m_iInitialTeamNum",
 		"m_iIKCounter",
 		"m_iInputFilter",
 		"m_iIntegerValue",
@@ -5876,6 +5877,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_radius",
 		"m_ragdoll.boneIndex",
 		"m_ragdoll.listCount",
+		"m_ragdoll.list[0].parentIndex",/*
 		"m_ragdoll.list[10].parentIndex",
 		"m_ragdoll.list[11].parentIndex",
 		"m_ragdoll.list[12].parentIndex",
@@ -5898,7 +5900,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_ragdoll.list[6].parentIndex",
 		"m_ragdoll.list[7].parentIndex",
 		"m_ragdoll.list[8].parentIndex",
-		"m_ragdoll.list[9].parentIndex",
+		"m_ragdoll.list[9].parentIndex",*/
 		"m_ragdollAttachedObjectIndex",
 		"m_rgItems",
 		"m_rgSuitPlayList",
@@ -5953,7 +5955,7 @@ export const stringCompletions: Set<string>[] = [
 		"movecollide",
 		"movetype",
 		"overlay_vars.m_AnimOverlay.000.m_nOrder",
-		"overlay_vars.m_AnimOverlay.000.m_nSequence",
+		"overlay_vars.m_AnimOverlay.000.m_nSequence",/*
 		"overlay_vars.m_AnimOverlay.001.m_nOrder",
 		"overlay_vars.m_AnimOverlay.001.m_nSequence",
 		"overlay_vars.m_AnimOverlay.002.m_nOrder",
@@ -5982,7 +5984,7 @@ export const stringCompletions: Set<string>[] = [
 		"overlay_vars.m_AnimOverlay.013.m_nSequence",
 		"overlay_vars.m_AnimOverlay.014.m_nOrder",
 		"overlay_vars.m_AnimOverlay.014.m_nSequence",
-		// "overlay_vars.m_AnimOverlay.lengthproxy.lengthprop15",
+		"overlay_vars.m_AnimOverlay.lengthproxy.lengthprop15",*/
 		"player_array_element",
 		"touchStamp"
 	]),
@@ -6696,10 +6698,10 @@ export const stringCompletions: Set<string>[] = [
 		"m_addLength",
 		"m_additionalAcceleration",
 		"m_angEyeAngles[0]",
-		"m_angEyeAngles[1]",
+		// "m_angEyeAngles[1]",
 		"m_angRotation[0]",
-		"m_angRotation[1]",
-		"m_angRotation[2]",
+		// "m_angRotation[1]",
+		// "m_angRotation[2]",
 		"m_angle",
 		"m_angleChange",
 		"m_angularAcceleration",
@@ -6774,7 +6776,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_flAnimEndTime",
 		"m_flAnimStartTime",
 		"m_flArcInterval[0]",
-		"m_flArcInterval[1]",
+		// "m_flArcInterval[1]",
 		"m_flAssaultDelay",
 		"m_flAssaultPointTolerance",
 		"m_flAssaultTimeout",
@@ -7070,7 +7072,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_flOut2",
 		"m_flOuterRadius",
 		"m_flOverlayTimes",
-		"m_flOverlayTimes[0]",
+		"m_flOverlayTimes[0]", /*
 		"m_flOverlayTimes[1]",
 		"m_flOverlayTimes[2]",
 		"m_flOverlayTimes[3]",
@@ -7079,7 +7081,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_flOverlayTimes[6]",
 		"m_flOverlayTimes[7]",
 		"m_flOverlayTimes[8]",
-		"m_flOverlayTimes[9]",
+		"m_flOverlayTimes[9]", */
 		"m_flPackSpeed",
 		"m_flPanelHeight",
 		"m_flPanelWidth",
@@ -7157,9 +7159,9 @@ export const stringCompletions: Set<string>[] = [
 		"m_flSpeed",
 		"m_flSpeedFactor",
 		"m_flSpeedForwardModifier",
-		"m_flSpeedLevels[0]",
+		"m_flSpeedLevels[0]", /*
 		"m_flSpeedLevels[1]",
-		"m_flSpeedLevels[2]",
+		"m_flSpeedLevels[2]", */
 		"m_flSpeedMax",
 		"m_flSpeedMin",
 		"m_flSplashRadius",
@@ -7204,7 +7206,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_flTextSpacingY",
 		"m_flTextureRes",
 		"m_flThickness[0]",
-		"m_flThickness[1]",
+		// "m_flThickness[1]",
 		"m_flThreshold",
 		"m_flThrottle",
 		"m_flTimeEnemyAcquired",
@@ -7222,7 +7224,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_flTimeUnderRotor",
 		"m_flTimeUnderRotorVariance",
 		"m_flTimeVisible[0]",
-		"m_flTimeVisible[1]",
+		// "m_flTimeVisible[1]",
 		"m_flTimeWeaponIdle",
 		"m_flTimeoutDuration",
 		"m_flTimerEndTime",
@@ -7377,13 +7379,13 @@ export const stringCompletions: Set<string>[] = [
 		"m_thruster.m_thrust",
 		"m_torqueLimit",
 		"m_totalLength",
-		"m_vecOrigin[2]",
-		"m_vecVelocity[0]",
+		"m_vecOrigin[0]",
+		"m_vecVelocity[0]",/*
 		"m_vecVelocity[1]",
-		"m_vecVelocity[2]",
-		"m_vecViewOffset[0]",
+		"m_vecVelocity[2]",*/
+		"m_vecViewOffset[0]",/*
 		"m_vecViewOffset[1]",
-		"m_vecViewOffset[2]",
+		"m_vecViewOffset[2]",*/
 		"m_volume",
 		"m_waterLevel",
 		"m_x",
@@ -7400,7 +7402,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_zmin",
 		"overlay_vars.m_AnimOverlay.000.m_flCycle",
 		"overlay_vars.m_AnimOverlay.000.m_flPrevCycle",
-		"overlay_vars.m_AnimOverlay.000.m_flWeight",
+		"overlay_vars.m_AnimOverlay.000.m_flWeight",/*
 		"overlay_vars.m_AnimOverlay.001.m_flCycle",
 		"overlay_vars.m_AnimOverlay.001.m_flPrevCycle",
 		"overlay_vars.m_AnimOverlay.001.m_flWeight",
@@ -7442,7 +7444,7 @@ export const stringCompletions: Set<string>[] = [
 		"overlay_vars.m_AnimOverlay.013.m_flWeight",
 		"overlay_vars.m_AnimOverlay.014.m_flCycle",
 		"overlay_vars.m_AnimOverlay.014.m_flPrevCycle",
-		"overlay_vars.m_AnimOverlay.014.m_flWeight"
+		"overlay_vars.m_AnimOverlay.014.m_flWeight"*/
 	]),
 	// STRING_PROPERTY
 	new Set([
@@ -7520,11 +7522,11 @@ export const stringCompletions: Set<string>[] = [
 		"m_iClassname",
 		"m_iFilterClass",
 		"m_iFilterName",
-		"m_iFilterName[0]",
+		"m_iFilterName[0]", /*
 		"m_iFilterName[1]",
 		"m_iFilterName[2]",
 		"m_iFilterName[3]",
-		"m_iFilterName[4]",
+		"m_iFilterName[4]",*/
 		"m_iGlobalname",
 		"m_iLandmark",
 		"m_iName",
@@ -7562,7 +7564,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszCommentaryFileNoHDR",
 		"m_iszConceptModifiers",
 		"m_iszControlPointName",
-		"m_iszControlPointNames[0]",
+		"m_iszControlPointNames[0]",/*
 		"m_iszControlPointNames[10]",
 		"m_iszControlPointNames[11]",
 		"m_iszControlPointNames[12]",
@@ -7624,7 +7626,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszControlPointNames[6]",
 		"m_iszControlPointNames[7]",
 		"m_iszControlPointNames[8]",
-		"m_iszControlPointNames[9]",
+		"m_iszControlPointNames[9]",*/
 		"m_iszCountdownImage",
 		"m_iszCustomMove",
 		"m_iszCustomTouchTrigger",
@@ -7653,7 +7655,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszGibModel",
 		"m_iszGoal",
 		"m_iszGoalNode",
-		"m_iszGroupMembers[0]",
+		"m_iszGroupMembers[0]",/*
 		"m_iszGroupMembers[10]",
 		"m_iszGroupMembers[11]",
 		"m_iszGroupMembers[12]",
@@ -7668,7 +7670,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszGroupMembers[6]",
 		"m_iszGroupMembers[7]",
 		"m_iszGroupMembers[8]",
-		"m_iszGroupMembers[9]",
+		"m_iszGroupMembers[9]",*/
 		"m_iszHudIcon",
 		"m_iszHudResFile",
 		"m_iszIcon",
@@ -7680,22 +7682,22 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszLastTarget",
 		"m_iszLightingOrigin",
 		"m_iszLightingOriginRelative",
-		"m_iszLinkedCPs[0]",
+		"m_iszLinkedCPs[0]",/*
 		"m_iszLinkedCPs[1]",
 		"m_iszLinkedCPs[2]",
 		"m_iszLinkedCPs[3]",
 		"m_iszLinkedCPs[4]",
 		"m_iszLinkedCPs[5]",
 		"m_iszLinkedCPs[6]",
-		"m_iszLinkedCPs[7]",
-		"m_iszLinkedPathTracks[0]",
+		"m_iszLinkedCPs[7]",*/
+		"m_iszLinkedPathTracks[0]",/*
 		"m_iszLinkedPathTracks[1]",
 		"m_iszLinkedPathTracks[2]",
 		"m_iszLinkedPathTracks[3]",
 		"m_iszLinkedPathTracks[4]",
 		"m_iszLinkedPathTracks[5]",
 		"m_iszLinkedPathTracks[6]",
-		"m_iszLinkedPathTracks[7]",
+		"m_iszLinkedPathTracks[7]",*/
 		"m_iszListenFilter",
 		"m_iszListener",
 		"m_iszMannVsMachineWaveClassNames",
@@ -7713,7 +7715,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszNewTarget",
 		"m_iszNextScript",
 		"m_iszOverlayNames",
-		"m_iszOverlayNames[0]",
+		"m_iszOverlayNames[0]",/*
 		"m_iszOverlayNames[1]",
 		"m_iszOverlayNames[2]",
 		"m_iszOverlayNames[3]",
@@ -7722,7 +7724,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszOverlayNames[6]",
 		"m_iszOverlayNames[7]",
 		"m_iszOverlayNames[8]",
-		"m_iszOverlayNames[9]",
+		"m_iszOverlayNames[9]",*/
 		"m_iszOverrideScript",
 		"m_iszPaperEffect",
 		"m_iszParentAttachment",
@@ -7757,7 +7759,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszRoundRedSpawn",
 		"m_iszSceneCustomMoveSeq",
 		"m_iszSceneFile",
-		"m_iszScenes[0]",
+		"m_iszScenes[0]",/*
 		"m_iszScenes[10]",
 		"m_iszScenes[11]",
 		"m_iszScenes[12]",
@@ -7772,7 +7774,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszScenes[6]",
 		"m_iszScenes[7]",
 		"m_iszScenes[8]",
-		"m_iszScenes[9]",
+		"m_iszScenes[9]",*/
 		"m_iszScriptId",
 		"m_iszScriptName",
 		"m_iszScriptThinkFunction",
@@ -7808,7 +7810,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszTargetAttachment",
 		"m_iszTemplate",
 		"m_iszTemplateData",
-		"m_iszTemplateEntityNames[0]",
+		"m_iszTemplateEntityNames[0]",/*
 		"m_iszTemplateEntityNames[10]",
 		"m_iszTemplateEntityNames[11]",
 		"m_iszTemplateEntityNames[12]",
@@ -7823,7 +7825,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_iszTemplateEntityNames[6]",
 		"m_iszTemplateEntityNames[7]",
 		"m_iszTemplateEntityNames[8]",
-		"m_iszTemplateEntityNames[9]",
+		"m_iszTemplateEntityNames[9]",*/
 		"m_iszTemplateName",
 		"m_iszTracerType",
 		"m_iszTrailEffect",
@@ -7847,7 +7849,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_modelString",
 		"m_movementSoundName",
 		"m_nBoostTimeLeft",
-		"m_nCase[0]",
+		"m_nCase[0]",/*
 		"m_nCase[10]",
 		"m_nCase[11]",
 		"m_nCase[12]",
@@ -7862,8 +7864,8 @@ export const stringCompletions: Set<string>[] = [
 		"m_nCase[6]",
 		"m_nCase[7]",
 		"m_nCase[8]",
-		"m_nCase[9]",
-		"m_nIgnoredEntityNames[0]",
+		"m_nCase[9]",*/
+		"m_nIgnoredEntityNames[0]",/*
 		"m_nIgnoredEntityNames[10]",
 		"m_nIgnoredEntityNames[11]",
 		"m_nIgnoredEntityNames[12]",
@@ -7894,7 +7896,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_nLogicBranchNames[6]",
 		"m_nLogicBranchNames[7]",
 		"m_nLogicBranchNames[8]",
-		"m_nLogicBranchNames[9]",
+		"m_nLogicBranchNames[9]",*/
 		"m_nLookAtName",
 		"m_nVehicleType",
 		"m_nameAttach",
@@ -7933,14 +7935,14 @@ export const stringCompletions: Set<string>[] = [
 		"m_pServerVehicle.m_vehicleSounds.iszSound",
 		"m_pServerVehicle.m_vehicleSounds.iszStateSounds",
 		"m_pServerVehicle.m_vehicleSounds.minStateTime",
-		"m_positionNames[0]",
+		"m_positionNames[0]",/*
 		"m_positionNames[1]",
 		"m_positionNames[2]",
 		"m_positionNames[3]",
 		"m_positionNames[4]",
 		"m_positionNames[5]",
 		"m_positionNames[6]",
-		"m_positionNames[7]",
+		"m_positionNames[7]",*/
 		"m_pszCapLayoutInHUD",
 		"m_pszCustomUpgradesFile",
 		"m_pszDestinationBaseName",
@@ -8036,7 +8038,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_Handle",
 		"m_Local.m_PlayerFog.m_hCtrl",
 		"m_Network.m_hParent",
-		"m_Shared.m_ConditionData.000.m_pProvider",
+		"m_Shared.m_ConditionData.000.m_pProvider",/*
 		"m_Shared.m_ConditionData.001.m_pProvider",
 		"m_Shared.m_ConditionData.002.m_pProvider",
 		"m_Shared.m_ConditionData.003.m_pProvider",
@@ -8166,7 +8168,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_Shared.m_ConditionData.127.m_pProvider",
 		"m_Shared.m_ConditionData.128.m_pProvider",
 		"m_Shared.m_ConditionData.129.m_pProvider",
-		"m_Shared.m_ConditionData.130.m_pProvider",
+		"m_Shared.m_ConditionData.130.m_pProvider",*/
 		"m_Shared.m_hCarriedObject",
 		"m_Shared.m_hDisguiseTarget",
 		"m_Shared.m_hDisguiseWeapon",
@@ -8297,7 +8299,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_hRobotArm",
 		"m_hRope",
 		"m_hSaveWeapon",
-		"m_hScenes[0]",
+		"m_hScenes[0]",/*
 		"m_hScenes[10]",
 		"m_hScenes[11]",
 		"m_hScenes[12]",
@@ -8312,7 +8314,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_hScenes[6]",
 		"m_hScenes[7]",
 		"m_hScenes[8]",
-		"m_hScenes[9]",
+		"m_hScenes[9]",*/
 		"m_hSecondaryLastWeapon",
 		"m_hSoundscape",
 		"m_hSpeaker",
@@ -8406,14 +8408,14 @@ export const stringCompletions: Set<string>[] = [
 		"m_HackedGunPos",
 		"m_LinearFloatLightColor",
 		"m_Local.m_audio.localSound",
-		"m_Local.m_audio.localSound[0]",
+		"m_Local.m_audio.localSound[0]",/*
 		"m_Local.m_audio.localSound[1]",
 		"m_Local.m_audio.localSound[2]",
 		"m_Local.m_audio.localSound[3]",
 		"m_Local.m_audio.localSound[4]",
 		"m_Local.m_audio.localSound[5]",
 		"m_Local.m_audio.localSound[6]",
-		"m_Local.m_audio.localSound[7]",
+		"m_Local.m_audio.localSound[7]",*/
 		"m_Local.m_fog.dirPrimary",
 		"m_Local.m_skybox3d.fog.dirPrimary",
 		"m_Local.m_skybox3d.origin",
@@ -8489,6 +8491,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_preferredCarryAngles",
 		"m_ragAngles",
 		"m_ragPos",
+		"m_ragdoll.list[0].originParentSpace",/*
 		"m_ragdoll.list[10].originParentSpace",
 		"m_ragdoll.list[11].originParentSpace",
 		"m_ragdoll.list[12].originParentSpace",
@@ -8511,7 +8514,7 @@ export const stringCompletions: Set<string>[] = [
 		"m_ragdoll.list[6].originParentSpace",
 		"m_ragdoll.list[7].originParentSpace",
 		"m_ragdoll.list[8].originParentSpace",
-		"m_ragdoll.list[9].originParentSpace",
+		"m_ragdoll.list[9].originParentSpace",*/
 		"m_ragdollMaxs",
 		"m_ragdollMins",
 		"m_shadowDirection",
