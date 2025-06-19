@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "watch",
+      "label": "Watch Client",
       "type": "npm",
-      "script": "watch",
+      "script": "watch:client",
       "isBackground": true,
       "group": {
         "kind": "build",
@@ -22,11 +22,46 @@
           "beginsPattern": "^\\[watch\\] build finished, watching for changes\\.\\.\\.$",
           "endsPattern": "^\\[watch\\] build finished, watching for changes\\.\\.\\.$"
         },
-        "fileLocation": ["relative", "${workspaceFolder}"]
+        "fileLocation": ["relative", "${workspaceFolder}/client"]
       },
       "presentation": {
         "panel": "dedicated",
         "reveal": "always"
+      }
+    },
+    {
+      "label": "Watch Server",
+      "type": "npm",
+      "script": "watch:server",
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": {
+        "owner": "esbuild",
+        "pattern": {
+          "regexp": "^\\[(ERROR|WARN)\\]\\s+(.*)$",
+          "severity": 1,
+          "message": 2
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\[watch\\] build finished, watching for changes\\.\\.\\.$",
+          "endsPattern": "^\\[watch\\] build finished, watching for changes\\.\\.\\.$"
+        },
+        "fileLocation": ["relative", "${workspaceFolder}/server"]
+      },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "watch",
+      "dependsOn": ["Watch Client", "Watch Server"],
+      "presentation": {
+        "panel": "shared"
       }
     }
   ]
