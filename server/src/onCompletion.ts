@@ -2,7 +2,7 @@ import { CompletionItem, CompletionItemKind, CompletionItemTag, CompletionParams
 import { Range, TextDocument } from 'vscode-languageserver-textdocument';
 import { documents, getDocumentSettings, documentInfo } from './server';
 import { Token, TokenIterator, TokenKind, globals } from 'squirrel';
-import { StringParam } from 'squirrel/src/globals';
+import { StringKind } from 'squirrel/src/globals';
 
 function convertOffsetsToRange(document: TextDocument, start: number, end: number): Range {
 	return {
@@ -198,7 +198,7 @@ export async function onCompletionHandler(params: CompletionParams): Promise<Com
 	return items;
 }
 
-function addPlainCompletionItems(uri: string, items: CompletionItem[], completionItemKind: CompletionItemKind, docs: Set<string>, kind?: StringParam) {
+function addPlainCompletionItems(uri: string, items: CompletionItem[], completionItemKind: CompletionItemKind, docs: Set<string>, kind?: StringKind) {
 	for (const item of docs) {
 		items.push({
 			label: item,
@@ -237,7 +237,7 @@ function addCompletionItems(uri: string, items: CompletionItem[], docKind: DocKi
 	}
 }
 
-function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringParam): void {
+function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringKind): void {
 	if (value.length === 0) {
 		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind], stringKind);
 		return;
@@ -516,7 +516,7 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 		*/
 		item.insertText = item.label.replaceAll('"', '\\"');
 
-		if (!StringParam[item.data.kind].endsWith("PROPERTY")) {
+		if (!StringKind[item.data.kind].endsWith("PROPERTY")) {
 			item.command = {
 				command: 'cursorMove',
 				title: 'Move Cursor',
