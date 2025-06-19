@@ -11,7 +11,7 @@ function convertOffsetsToRange(document: TextDocument, start: number, end: numbe
 	};
 }
 
-enum DocKind {
+const enum DocKind {
 	Keywords,
 	Methods,
 	DeprecatedMethods,

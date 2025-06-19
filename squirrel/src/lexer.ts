@@ -1,7 +1,7 @@
 import CharCode from './charCode';
 import * as globals from './globals';
 
-export enum TokenKind {
+export const enum TokenKind {
 	SKIP = -2,
 	INVALID = -1,
 	EOF = 0,
