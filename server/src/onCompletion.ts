@@ -8,7 +8,7 @@ function convertOffsetsToRange(document: TextDocument, start: number, end: numbe
 	return {
 		start: document.positionAt(start),
 		end: document.positionAt(end)
-	}
+	};
 }
 
 enum DocKind {
@@ -73,7 +73,7 @@ export async function onCompletionHandler(params: CompletionParams): Promise<Com
 
 	const cache: CompletionCache = {
 		searchResult: result
-	}
+	};
 	completionCache.set(document.uri, cache);
 
 
@@ -94,7 +94,7 @@ export async function onCompletionHandler(params: CompletionParams): Promise<Com
 			return items;
 		}
 		
-		if ((kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) && result.token.end != offset) {
+		if ((kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) && result.token.end !== offset) {
 			if (triggerChar === '@') {
 				return [];
 			}
@@ -521,20 +521,20 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 				command: 'cursorMove',
 				title: 'Move Cursor',
 				arguments: [{ to: 'right', by: 'character', value: 1 }]
-			}
+			};
 			return item;
 		}
 		
 		let snippet_id = 0;
 		item.insertText = item.insertText.replace(/\d+/g, (match) => `\${${snippet_id++}:${match}}`);
-		if (snippet_id != 0) {
+		if (snippet_id !== 0) {
 			item.insertTextFormat = InsertTextFormat.Snippet;
 		} else {
 			item.command = {
 				command: 'cursorMove',
 				title: 'Move Cursor',
 				arguments: [{ to: 'right', by: 'character', value: 1 }]
-			}
+			};
 		}
 		
 		return item;

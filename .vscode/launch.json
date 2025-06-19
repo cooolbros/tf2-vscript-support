@@ -2,17 +2,16 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Launch Extension",
       "type": "extensionHost",
       "request": "launch",
-      "name": "Launch Client",
       "runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}"
+      ],
       "outFiles": ["${workspaceFolder}/**/*.js"],
       "autoAttachChildProcesses": true,
-      "preLaunchTask": {
-        "type": "npm",
-        "script": "bundle-dev"
-      }
+      "preLaunchTask": "watch"
     }
   ]
 }

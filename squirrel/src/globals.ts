@@ -62,7 +62,7 @@ export const stringCompletions: Set<string>[] = stringCompletionsArray.map(
 // It's possible to set any sort of keyvalue as a string
 for (const keyvalue of [StringKind.NUMBER_KEYVALUE, StringKind.VECTOR_KEYVALUE]) {
 	for (const item of stringCompletions[keyvalue]) {
-		stringCompletions[StringKind.STRING_KEYVALUE].add(item)
+		stringCompletions[StringKind.STRING_KEYVALUE].add(item);
 	}
 }
 
@@ -143,7 +143,7 @@ export const builtInVariables: Docs = loadDocs(docs.variables);
 
 
 export const instancesMethods: InstanceDocs = loadInstanceDocs(docs.instancesMethods);
-export const instancesVariables: InstanceDocs = loadInstanceDocs(docs.instancesVariables)
+export const instancesVariables: InstanceDocs = loadInstanceDocs(docs.instancesVariables);
 
 export const otherMethods: Docs = new Map();
 export const otherVariables: Docs = new Map();

@@ -15,6 +15,31 @@
   "categories": [
     "Programming Languages"
   ],
+  "scripts": {
+    "vscode:prepublish": "npm run bundle",
+    "bundle": "npm run bundle:server -- --minify && npm run bundle:client -- --minify",
+    "bundle-dev": "npm run bundle:server -- --sourcemap && npm run bundle:client -- --sourcemap",
+    "bundle:client": "esbuild ./client/src/extension.ts --bundle --outfile=./out/extension.js --external:vscode --format=cjs --platform=node --target=node20",
+    "bundle:server": "esbuild ./server/src/server.ts --bundle --outfile=./out/server.js --external:vscode --format=cjs --platform=node --target=node20",
+    "watch:client": "npm run bundle:server -- --sourcemap --watch",
+    "watch:server": "npm run bundle:client -- --sourcemap --watch",
+    "watch": "run-p watch:client watch:server",
+    "lint": "eslint",
+    "line:fix": "npm run lint -- --fix",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@stylistic/eslint-plugin": "^2.9.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20",
+    "esbuild": "^0.25.5",
+    "eslint": "^9.13.0",
+    "mocha": "^10.3.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.0"
+  },
   "activationEvents": [
     "onLanguage:squirrel"
   ],
@@ -97,27 +122,5 @@
         "path": "./syntaxes/squirrelDoc.tmLanguage.json"
       }
     ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run bundle",
-    "bundle": "npm run bundle:server -- --minify && npm run bundle:client -- --minify",
-    "bundle-dev": "npm run bundle:server -- --sourcemap && npm run bundle:client -- --sourcemap",
-    "bundle:client": "esbuild ./client/src/extension.ts --bundle --outfile=./out/extension.js --external:vscode --format=cjs --platform=node --target=node20",
-    "bundle:server": "esbuild ./server/src/server.ts --bundle --outfile=./out/server.js --external:vscode --format=cjs --platform=node --target=node20",
-    "watch": "bundle:server -- --sourcemap --watch && bundle:client -- --sourcemap --watch",
-    "compile": "tsc -b",
-    "lint": "eslint",
-    "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.13.0",
-    "@stylistic/eslint-plugin": "^2.9.0",
-    "@types/mocha": "^10.0.6",
-    "@types/node": "^20",
-    "esbuild": "^0.25.5",
-    "eslint": "^9.13.0",
-    "mocha": "^10.3.0",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.0"
   }
 }

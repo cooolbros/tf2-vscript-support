@@ -6,7 +6,7 @@ export default async function onEnterHandler(document: TextDocument, offset: num
 	if (!editor) {
 		return;
 	}
-	
+
 	// position before pressing enter
 	const previousPosition = document.positionAt(offset);
 	const line = previousPosition.line;
