@@ -1,7 +1,7 @@
-
 import os
 import vpk
 from sortedcontainers import SortedSet
+import valvepcf
 
 sound_exts = {'.wav', '.mp3'}
 model_exts = {'.mdl'}
@@ -13,19 +13,26 @@ models = SortedSet()
 particles = SortedSet()
 textures = SortedSet()
 
+
+output_dir = "output/pcf_files"
 tf_dir = 'D:/Program Files/Steam/steamapps/common/Team Fortress 2'
 dir_vpk_files = []
-for root, dirs, files in os.walk(tf_dir):
-    for f in files:
-        if f.endswith('dir.vpk'):
-            full_path = os.path.join(root, f)
-            dir_vpk_files.append(full_path)
+target_dirs = ['tf', 'hl']
+
+for subdir in target_dirs:
+    full_subdir_path = os.path.join(tf_dir, subdir)
+    if not os.path.exists(full_subdir_path):
+        continue
+
+    dir_vpk_files += [os.path.join(full_subdir_path, f) for f in os.listdir(full_subdir_path) if f.endswith('dir.vpk')]
 
 def cut_prefix(path, prefix):
     if path.startswith(prefix):
         return path[len(prefix):]
 
     return path
+
+temp_pcf = "temp.pcf"
 
 for vpk_file in dir_vpk_files:
     with vpk.open(vpk_file) as archive:
@@ -36,8 +43,14 @@ for vpk_file in dir_vpk_files:
             elif ext in model_exts:
                 models.add(filepath)
             elif ext in particle_exts:
-                # Only file names for the particles
-                particles.add(os.path.basename(filepath)[:-4])
+                data = archive[filepath].read()
+                with open(temp_pcf, 'wb') as out:
+                    out.write(data)
+
+                pcf = valvepcf.Pcf(temp_pcf)
+                for system in pcf.systems:
+                    particles.add(system._name)
+
             elif ext in texture_exts:
                 textures.add(cut_prefix(filepath, "materials/"))
 
@@ -56,3 +69,4 @@ with open("output/particles.txt", 'w') as output:
 with open("output/textures.txt", 'w') as output:
     for path in textures:
         output.write(f'"{path}",\n')
+
