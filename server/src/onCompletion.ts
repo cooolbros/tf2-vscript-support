@@ -222,19 +222,14 @@ function addCompletionItems(uri: string, items: CompletionItem[], docKind: DocKi
 	}
 }
 
-function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringParam): void {
-	if (value.length === 0) {
+function addStringDelimiterCompletions(uri: string, items: CompletionItem[], value: string, stringKind: StringParam, delimiter: string): void {
+	const delimiterIndex = value.lastIndexOf(delimiter);
+	if (delimiterIndex === -1) {
 		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
 		return;
 	}
 
-	const dot = value.lastIndexOf('.');
-	if (dot === -1) {
-		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
-		return;
-	}
-	
-	const cutValue = value.slice(0, dot + 1);
+	const cutValue = value.slice(0, delimiterIndex + 1);
 	for (const item of globals.stringCompletions[stringKind]) {
 		if (item.startsWith(cutValue)) {
 			items.push({
@@ -243,6 +238,21 @@ function addStringCompletionItems(uri: string, items: CompletionItem[], value: s
 				data: { uri }
 			});
 		}
+	}
+}
+
+function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringParam): void {
+	if (value.length === 0) {
+		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		return;
+	}
+
+	if (stringKind === StringParam.MODEL || stringKind === StringParam.SOUND) {
+		addStringDelimiterCompletions(uri, items, value, stringKind, '/');
+	}
+	
+	if (StringParam[stringKind].endsWith("PROPERTY")) {
+		addStringDelimiterCompletions(uri, items, value, stringKind, '.');
 	}
 }
 
