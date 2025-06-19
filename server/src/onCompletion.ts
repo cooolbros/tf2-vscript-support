@@ -76,8 +76,8 @@ export async function onCompletionHandler(params: CompletionParams): Promise<Com
 	}
 	completionCache.set(document.uri, cache);
 
+
 	const triggerChar = params.context?.triggerCharacter;
-	console.log(triggerChar);
 	if (result.token) {
 		const kind = result.token.kind;
 		if (kind === TokenKind.LINE_COMMENT || kind === TokenKind.BLOCK_COMMENT) {
