@@ -22,7 +22,7 @@ export function activate(context: ExtensionContext) {
 	};
 
 	const clientOptions: LanguageClientOptions = {
-		documentSelector: [{ scheme: 'file', language: 'squirrel' }],
+		documentSelector: [{ language: 'squirrel' }],
 		synchronize: {
 			fileEvents: workspace.createFileSystemWatcher('**/*.nut')
 		}
