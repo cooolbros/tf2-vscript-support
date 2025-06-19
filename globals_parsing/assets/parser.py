@@ -1,4 +1,6 @@
 import os
+import re
+
 import vpk
 from sortedcontainers import SortedSet
 import valvepcf
@@ -12,6 +14,7 @@ sounds = SortedSet()
 models = SortedSet()
 particles = SortedSet()
 textures = SortedSet()
+sound_scripts = SortedSet()
 
 
 output_dir = "output/pcf_files"
@@ -50,9 +53,12 @@ for vpk_file in dir_vpk_files:
                 pcf = valvepcf.Pcf(temp_pcf)
                 for system in pcf.systems:
                     particles.add(system._name)
-
             elif ext in texture_exts:
                 textures.add(cut_prefix(filepath, "materials/"))
+            elif filepath.lower().startswith("scripts/game_sounds") and filepath.endswith(".txt"):
+                content = archive[filepath].read().decode(errors='ignore')
+                names = re.findall(r'^"([^"]+)"\s*\{', content, flags=re.MULTILINE)
+                sound_scripts.update(names)
 
 with open("output/sounds.txt", 'w') as output:
     for path in sounds:
@@ -69,4 +75,9 @@ with open("output/particles.txt", 'w') as output:
 with open("output/textures.txt", 'w') as output:
     for path in textures:
         output.write(f'"{path}",\n')
+
+with open("output/sound_scripts.txt", 'w') as output:
+    for path in sound_scripts:
+        output.write(f'"{path}",\n')
+
 
