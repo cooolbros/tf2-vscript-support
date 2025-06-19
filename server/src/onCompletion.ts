@@ -448,7 +448,15 @@ function functionParanthesis(document: TextDocument): boolean {
 		}
 		
 		token = iterator.previous();
-	} 
+	}
+
+	if (token.kind === TokenKind.LOCAL) {
+		if (!iterator.hasPrevious()) {
+			return false;
+		}
+		
+		token = iterator.previous();
+	}
 
 	if (token.kind === TokenKind.SEMICOLON || token.kind === TokenKind.LINE_FEED) {
 		return false;
