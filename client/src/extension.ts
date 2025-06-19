@@ -45,21 +45,21 @@ export function activate(context: ExtensionContext) {
 			}
 
 			const indent = changes[0].text;
-			if (indent.match(/\S+/)) {
+			if (indent.match(/\S/)) {
 				return;
 			}
 			const document = event.document;
 			const offset = changes[0].rangeOffset;
 
 			client.sendRequest('getToken', { uri: document.uri.toString(), offset: offset - 1 })
-			.then(async (response) => {
-				if (!response) {
-					return;
-				}
+				.then(async (response) => {
+					if (!response) {
+						return;
+					}
 
-				const token = response as Token;
-				await onEnterHandler(document, offset, indent, token);
-			});
+					const token = response as Token;
+					await onEnterHandler(document, offset, indent, token);
+				});
 		})
 	);
 }
@@ -68,7 +68,7 @@ export function deactivate(): Thenable<void> | undefined {
 	if (!client) {
 		return undefined;
 	}
-	
+
 	return client.stop();
 }
 
