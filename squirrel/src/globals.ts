@@ -1,5 +1,7 @@
 import keywordsArray from './data/keywords.json';
 import stringCompletionsArray from './data/stringCompletions.json';
+import docs from "./data/docs.json";
+
 
 
 export enum StringKind {
@@ -35,7 +37,24 @@ export enum StringKind {
 	SOUND
 }
 
+export interface Doc {
+	detail: string;
+	desc?: string;
+	successor?: string;
+	append?: string;
+	snippet?: string;
+	[param: number]: StringKind | undefined;
+};
+
+export type Docs = Map<string, Doc>;
+
+export type InstanceDocs = Map<string, Docs>;
+
+
+
 export const keywords = new Set<string>(keywordsArray);
+
+
 export const stringCompletions: Set<string>[] = stringCompletionsArray.map(
 	(arr: string[]) => new Set<string>(arr)
 );
@@ -77,22 +96,6 @@ stringCompletions[StringKind.SOUND] = new Set([
 for (const item of stringCompletions[StringParam.BOOL_PROPERTY]) {
 	stringCompletions[StringParam.INT_PROPERTY].add(item);
 }*/
-
-export interface Doc {
-	detail: string;
-	desc?: string;
-	successor?: string;
-	append?: string;
-	snippet?: string;
-	[param: number]: StringKind | undefined;
-}
-
-import docs from "./data/docs.json";
-
-
-export type Docs = Map<string, Doc>;
-
-export type InstanceDocs = Map<string, Docs>;
 
 
 function reviveDoc(doc: any): Doc {
