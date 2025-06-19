@@ -1,4 +1,4 @@
-import { CompletionItem, CompletionItemKind, CompletionItemTag, InsertTextFormat, MarkupKind, Position, TextDocumentPositionParams, TextEdit } from 'vscode-languageserver';
+import { CompletionItem, CompletionItemKind, CompletionItemTag, CompletionParams, InsertTextFormat, MarkupKind, Position, TextDocumentPositionParams, TextEdit } from 'vscode-languageserver';
 import { Range, TextDocument } from 'vscode-languageserver-textdocument';
 import { documents, getDocumentSettings, documentInfo } from './server';
 import { Token, TokenIterator, TokenKind, globals } from 'squirrel';
@@ -48,7 +48,7 @@ type CompletionCache = {
 
 const completionCache = new Map<string, CompletionCache>();
 
-export async function onCompletionHandler(params: TextDocumentPositionParams): Promise<CompletionItem[]> {
+export async function onCompletionHandler(params: CompletionParams): Promise<CompletionItem[]> {
 	const document = documents.get(params.textDocument.uri);
 	if (!document) {
 		return [];
@@ -76,7 +76,8 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	}
 	completionCache.set(document.uri, cache);
 
-
+	const triggerChar = params.context?.triggerCharacter;
+	console.log(triggerChar);
 	if (result.token) {
 		const kind = result.token.kind;
 		if (kind === TokenKind.LINE_COMMENT || kind === TokenKind.BLOCK_COMMENT) {
@@ -84,12 +85,20 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 		}
 
 		if (kind === TokenKind.DOC) {
+			if (triggerChar !== '@') {
+				return [];
+			}
+
 			const items: CompletionItem[] = [];
 			addCompletionItems(document.uri, items, DocKind.DocSnippets, CompletionItemKind.Snippet);
 			return items;
 		}
 		
 		if ((kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) && result.token.end != offset) {
+			if (triggerChar === '@') {
+				return [];
+			}
+
 			const iterator = new TokenIterator(lexer.getTokens(), result.index - 1);
 			const items = stringCompletion(document.uri, result.token.value, iterator);
 			if (items) {
@@ -98,6 +107,11 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 			}
 		}
 	}
+	// These should only work if the user writes inside a doc / string
+	if (triggerChar === '@' || triggerChar === '/') {
+		return [];
+	}
+
 
 	const items: CompletionItem[] = [];
 	
@@ -209,7 +223,7 @@ function addCompletionItems(uri: string, items: CompletionItem[], docKind: DocKi
 	if (docKind === DocKind.DeprecatedFunctions || docKind === DocKind.DeprecatedMethods) {
 		tags.push(CompletionItemTag.Deprecated);
 	}
-
+	
 	for (const label of docs.keys()) {
 		items.push({
 			label: label,
@@ -223,14 +237,21 @@ function addCompletionItems(uri: string, items: CompletionItem[], docKind: DocKi
 	}
 }
 
-function addStringDelimiterCompletions(uri: string, items: CompletionItem[], value: string, stringKind: StringParam, delimiter: string): void {
-	const delimiterIndex = value.lastIndexOf(delimiter);
-	if (delimiterIndex === -1) {
+function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringParam): void {
+	if (value.length === 0) {
 		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind], stringKind);
 		return;
 	}
 
-	const cutValue = value.slice(0, delimiterIndex + 1);
+	const dotIndex = value.lastIndexOf('.');
+	const slashIndex = value.lastIndexOf('/');
+	const lastDelimiterIndex = Math.max(dotIndex, slashIndex);
+	if (lastDelimiterIndex === -1) {
+		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind], stringKind);
+		return;
+	}
+
+	const cutValue = value.slice(0, lastDelimiterIndex + 1);
 	for (const item of globals.stringCompletions[stringKind]) {
 		if (item.startsWith(cutValue)) {
 			items.push({
@@ -239,21 +260,6 @@ function addStringDelimiterCompletions(uri: string, items: CompletionItem[], val
 				data: { uri, kind: stringKind }
 			});
 		}
-	}
-}
-
-function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringParam): void {
-	if (value.length === 0) {
-		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind], stringKind);
-		return;
-	}
-
-	if (stringKind === StringParam.MODEL || stringKind === StringParam.SOUND) {
-		addStringDelimiterCompletions(uri, items, value, stringKind, '/');
-	}
-	
-	if (StringParam[stringKind].endsWith("PROPERTY")) {
-		addStringDelimiterCompletions(uri, items, value, stringKind, '.');
 	}
 }
 
