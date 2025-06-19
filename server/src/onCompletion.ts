@@ -1,8 +1,7 @@
 import { CompletionItem, CompletionItemKind, CompletionItemTag, CompletionParams, InsertTextFormat, MarkupKind, Position, TextDocumentPositionParams, TextEdit } from 'vscode-languageserver';
 import { Range, TextDocument } from 'vscode-languageserver-textdocument';
 import { documents, getDocumentSettings, documentInfo } from './server';
-import { Token, TokenIterator, TokenKind, globals } from 'squirrel';
-import { StringKind } from 'squirrel/src/globals';
+import { Token, TokenIterator, TokenKind, globals, StringKind } from 'squirrel';
 
 function convertOffsetsToRange(document: TextDocument, start: number, end: number): Range {
 	return {
