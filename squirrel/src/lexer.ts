@@ -351,6 +351,7 @@ export class Lexer {
 		},
 		'"': this.lexString.bind(this),
 		'\'': this.lexString.bind(this),
+		'`': this.lexString.bind(this),
 		'{': TokenKind.LEFT_CURLY,
 		'}': TokenKind.RIGHT_CURLY,
 		'(': TokenKind.LEFT_ROUND,
