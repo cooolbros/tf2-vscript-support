@@ -184,13 +184,14 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	return items;
 }
 
-function addPlainCompletionItems(uri: string, items: CompletionItem[], completionItemKind: CompletionItemKind, docs: Set<string>) {
+function addPlainCompletionItems(uri: string, items: CompletionItem[], completionItemKind: CompletionItemKind, docs: Set<string>, kind?: StringParam) {
 	for (const item of docs) {
 		items.push({
 			label: item,
 			kind: completionItemKind,
 			data: {
-				uri
+				uri,
+				kind
 			}
 		});
 	}
@@ -216,7 +217,7 @@ function addCompletionItems(uri: string, items: CompletionItem[], docKind: DocKi
 			tags: tags,
 			data: {
 				uri,
-				docKind
+				kind: docKind
 			}
 		});
 	}
@@ -225,7 +226,7 @@ function addCompletionItems(uri: string, items: CompletionItem[], docKind: DocKi
 function addStringDelimiterCompletions(uri: string, items: CompletionItem[], value: string, stringKind: StringParam, delimiter: string): void {
 	const delimiterIndex = value.lastIndexOf(delimiter);
 	if (delimiterIndex === -1) {
-		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind], stringKind);
 		return;
 	}
 
@@ -235,7 +236,7 @@ function addStringDelimiterCompletions(uri: string, items: CompletionItem[], val
 			items.push({
 				label: item.slice(cutValue.length),
 				kind: CompletionItemKind.Value,
-				data: { uri }
+				data: { uri, kind: stringKind }
 			});
 		}
 	}
@@ -243,7 +244,7 @@ function addStringDelimiterCompletions(uri: string, items: CompletionItem[], val
 
 function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringParam): void {
 	if (value.length === 0) {
-		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind], stringKind);
 		return;
 	}
 
@@ -500,6 +501,15 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 		]
 		*/
 		item.insertText = item.label.replaceAll('"', '\\"');
+
+		if (!StringParam[item.data.kind].endsWith("PROPERTY")) {
+			item.command = {
+				command: 'cursorMove',
+				title: 'Move Cursor',
+				arguments: [{ to: 'right', by: 'character', value: 1 }]
+			}
+			return item;
+		}
 		
 		let snippet_id = 0;
 		item.insertText = item.insertText.replace(/\d+/g, (match) => `\${${snippet_id++}:${match}}`);
@@ -516,7 +526,7 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 		return item;
 	}
 
-	const doc = docKindToDocs.get(item.data.docKind)?.get(item.label);
+	const doc = docKindToDocs.get(item.data.kind)?.get(item.label);
 	if (!doc) {
 		return item;
 	}
