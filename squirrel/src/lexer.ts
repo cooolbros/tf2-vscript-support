@@ -349,8 +349,9 @@ export class Lexer {
 			'"': this.lexVerbatimString,
 			fallback: TokenKind.LAMBDA
 		},
-		'"': this.lexString,
-		'\'': this.lexString,
+		'"': this.lexString.bind(this),
+		'\'': this.lexString.bind(this),
+		'`': this.lexString.bind(this),
 		'{': TokenKind.LEFT_CURLY,
 		'}': TokenKind.RIGHT_CURLY,
 		'(': TokenKind.LEFT_ROUND,
