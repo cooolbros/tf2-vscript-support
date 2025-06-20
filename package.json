@@ -38,9 +38,7 @@
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.0"
   },
-  "activationEvents": [
-    "onLanguage:squirrel"
-  ],
+  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "snippets": [

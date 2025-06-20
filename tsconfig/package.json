@@ -1,6 +1,6 @@
 {
-    "name": "tsconfig",
-    "publishConfig": {
-        "access": "public"
-    }
+  "name": "tsconfig",
+  "publishConfig": {
+    "access": "public"
+  }
 }
