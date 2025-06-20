@@ -1,7 +1,5 @@
 "m_Shared.m_flItemChargeMeter",
 "m_TeamRespawnWaveTimes",
-"m_VehiclePhysics.m_wheelBaseHeight",
-"m_VehiclePhysics.m_wheelTotalHeight",
 "m_flCPTimerTimes",
 "m_flCapPercentages",
 "m_flConnectTime",

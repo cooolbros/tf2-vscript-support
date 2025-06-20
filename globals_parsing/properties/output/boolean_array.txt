@@ -5,7 +5,6 @@
 "m_bAlive",
 "m_bBlocked",
 "m_bCPCapRateScalesWithPlayers",
-"m_bCPIsVisible",
 "m_bCPLocked",
 "m_bConnected",
 "m_bHillIsDownhill",

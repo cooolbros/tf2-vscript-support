@@ -1,4 +1,4 @@
-import re
+import json
 from sortedcontainers import SortedDict
 
 kind_to_file = {
@@ -17,21 +17,16 @@ kind_to_file = {
     "vector_array": open("output/vector_array.txt", "w"),
 }
 
-with open("../shared/properties.txt", "r") as input:
-    properties = SortedDict()
+with open("../shared/properties.json", "r") as input:
+    properties = SortedDict(json.load(input))
 
-    for line in input:
-        property_match = re.match(r"(\S+): (\w+)", line)
-        if property_match:
-            properties[property_match.group(1)] = property_match.group(2)
+for property, type in properties.items():
+    property = property.replace('"', '\\"')
+    kind_to_file[type].write(f'"{property}",\n')
 
-    for property, type in properties.items():
-        property = property.replace('"', '\\"')
-        kind_to_file[type].write(f'"{property}",\n')
-
-        # It's possible to access the 0th element of an array with a single value fetch function
-        if type.endswith("array"):
-            kind_to_file[type[:-6]].write(f'"{property}",\n')
+    # It's possible to access the 0th element of an array with a single value fetch function
+    if type.endswith("array"):
+        kind_to_file[type[:-6]].write(f'"{property}",\n')
 
 for file in kind_to_file.values():
     file.close()
