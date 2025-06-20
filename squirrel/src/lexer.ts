@@ -667,7 +667,12 @@ export class Lexer {
 			this.next();
 			if (this.charCode() === opening) {
 				this.next();
-				return { kind: TokenKind.VERBATIM_STRING, value };
+				if (this.charCode() !== opening) {
+					return { kind: TokenKind.VERBATIM_STRING, value };
+				}
+				
+				value += String.fromCharCode(opening);
+				continue;
 			}
 			value += this.current;
 		} while (!this.readEOF);
