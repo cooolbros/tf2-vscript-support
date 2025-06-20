@@ -46,7 +46,7 @@ connection.onInitialize((params: InitializeParams) => {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			// Tell the client that this server supports code completion.
 			completionProvider: {
-				triggerCharacters: [ '.', '@', '"' ],
+				triggerCharacters: [ '.', '@', '"', '/' ],
 				resolveProvider: true
 			},
 			hoverProvider: true,
@@ -247,7 +247,7 @@ function runParse(document: TextDocument): Diagnostic[] {
 	const iterator = new TokenIterator(info.lexer.getTokens());
 	while (iterator.hasNext()) {
 		const token = iterator.next();
-		if (token.kind != TokenKind.IDENTIFIER) {
+		if (token.kind !== TokenKind.IDENTIFIER) {
 			continue;
 		}
 
@@ -333,7 +333,7 @@ function getParamCount(signature: string): { minParamCount: number, maxParamCoun
 	let paramCount = 1;
 	let defaultParamCount = 0;
 	let isVariadic = false;
-	for (let token = lexer.lex(); token.kind != TokenKind.EOF; token = lexer.lex()) {
+	for (let token = lexer.lex(); token.kind !== TokenKind.EOF; token = lexer.lex()) {
 		switch (token.kind) {
 		case TokenKind.COMMA:
 			paramCount++;
@@ -395,7 +395,7 @@ function getUsedParamCount(iterator: TokenIterator): number {
 			break;
 		}
 
-		if (!foundParam && !isTokenAComment(token) && token.kind != TokenKind.LINE_FEED) {
+		if (!foundParam && !isTokenAComment(token) && token.kind !== TokenKind.LINE_FEED) {
 			foundParam = true;
 		}
 	}

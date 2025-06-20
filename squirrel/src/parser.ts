@@ -112,16 +112,16 @@ export class Parser {
 		this.next();
 		while (this.token.kind !== TokenKind.EOF) {
 			this.statement();
-			if (this.prevToken.kind != TokenKind.RIGHT_CURLY && this.prevToken.kind != TokenKind.SEMICOLON) {
+			if (this.prevToken.kind !== TokenKind.RIGHT_CURLY && this.prevToken.kind !== TokenKind.SEMICOLON) {
 				this.optionalSemicolon();
 			}
 		} 
 	}
 
 	private statements() {
-		while (this.token.kind != TokenKind.RIGHT_CURLY && this.token.kind != TokenKind.DEFAULT && this.token.kind != TokenKind.CASE) {
+		while (this.token.kind !== TokenKind.RIGHT_CURLY && this.token.kind !== TokenKind.DEFAULT && this.token.kind !== TokenKind.CASE) {
 			this.statement();
-			if (this.prevToken.kind != TokenKind.RIGHT_CURLY && this.prevToken.kind != TokenKind.SEMICOLON) {
+			if (this.prevToken.kind !== TokenKind.RIGHT_CURLY && this.prevToken.kind !== TokenKind.SEMICOLON) {
 				this.optionalSemicolon();
 			}
 		}
@@ -436,6 +436,6 @@ export class Parser {
 
 	
 	private commaExpression(): void {
-		for (this.expression(); this.token.kind === TokenKind.COMMA; this.next(), this.commaExpression());
+		for (this.expression(); this.token.kind === TokenKind.COMMA; this.next(), this.commaExpression()) { }
 	}
 }

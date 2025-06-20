@@ -1,7 +1,7 @@
 import CharCode from './charCode';
 import * as globals from './globals';
 
-export enum TokenKind {
+export const enum TokenKind {
 	SKIP = -2,
 	INVALID = -1,
 	EOF = 0,
@@ -311,10 +311,10 @@ export class Lexer {
 		' ': TokenKind.SKIP,
 		'\t': TokenKind.SKIP,
 		'\n': TokenKind.LINE_FEED,
-		'#': this.lexLineComment.bind(this),
+		'#': this.lexLineComment,
 		'/': {
-			'*': this.lexBlockComment.bind(this),
-			'/': this.lexLineComment.bind(this),
+			'*': this.lexBlockComment,
+			'/': this.lexLineComment,
 			'=': TokenKind.DIVIDE_ASSIGN,
 			'>': TokenKind.ATTR_CLOSE,
 			fallback: TokenKind.DIVIDE
@@ -346,7 +346,7 @@ export class Lexer {
 			fallback: TokenKind.NOT
 		},
 		'@': {
-			'"': this.lexVerbatimString.bind(this),
+			'"': this.lexVerbatimString,
 			fallback: TokenKind.LAMBDA
 		},
 		'"': this.lexString.bind(this),
@@ -403,75 +403,75 @@ export class Lexer {
 
 		// Whoopsie
 		// Identifier
-		'a': this.lexIdentifier.bind(this),
-		'b': this.lexIdentifier.bind(this),
-		'c': this.lexIdentifier.bind(this),
-		'd': this.lexIdentifier.bind(this),
-		'e': this.lexIdentifier.bind(this),
-		'f': this.lexIdentifier.bind(this),
-		'g': this.lexIdentifier.bind(this),
-		'h': this.lexIdentifier.bind(this),
-		'i': this.lexIdentifier.bind(this),
-		'j': this.lexIdentifier.bind(this),
-		'k': this.lexIdentifier.bind(this),
-		'l': this.lexIdentifier.bind(this),
-		'm': this.lexIdentifier.bind(this),
-		'n': this.lexIdentifier.bind(this),
-		'o': this.lexIdentifier.bind(this),
-		'p': this.lexIdentifier.bind(this),
-		'q': this.lexIdentifier.bind(this),
-		'r': this.lexIdentifier.bind(this),
-		's': this.lexIdentifier.bind(this),
-		't': this.lexIdentifier.bind(this),
-		'u': this.lexIdentifier.bind(this),
-		'v': this.lexIdentifier.bind(this),
-		'w': this.lexIdentifier.bind(this),
-		'x': this.lexIdentifier.bind(this),
-		'y': this.lexIdentifier.bind(this),
-		'z': this.lexIdentifier.bind(this),
+		'a': this.lexIdentifier,
+		'b': this.lexIdentifier,
+		'c': this.lexIdentifier,
+		'd': this.lexIdentifier,
+		'e': this.lexIdentifier,
+		'f': this.lexIdentifier,
+		'g': this.lexIdentifier,
+		'h': this.lexIdentifier,
+		'i': this.lexIdentifier,
+		'j': this.lexIdentifier,
+		'k': this.lexIdentifier,
+		'l': this.lexIdentifier,
+		'm': this.lexIdentifier,
+		'n': this.lexIdentifier,
+		'o': this.lexIdentifier,
+		'p': this.lexIdentifier,
+		'q': this.lexIdentifier,
+		'r': this.lexIdentifier,
+		's': this.lexIdentifier,
+		't': this.lexIdentifier,
+		'u': this.lexIdentifier,
+		'v': this.lexIdentifier,
+		'w': this.lexIdentifier,
+		'x': this.lexIdentifier,
+		'y': this.lexIdentifier,
+		'z': this.lexIdentifier,
 
-		'A': this.lexIdentifier.bind(this),
-		'B': this.lexIdentifier.bind(this),
-		'C': this.lexIdentifier.bind(this),
-		'D': this.lexIdentifier.bind(this),
-		'E': this.lexIdentifier.bind(this),
-		'F': this.lexIdentifier.bind(this),
-		'G': this.lexIdentifier.bind(this),
-		'H': this.lexIdentifier.bind(this),
-		'I': this.lexIdentifier.bind(this),
-		'J': this.lexIdentifier.bind(this),
-		'K': this.lexIdentifier.bind(this),
-		'L': this.lexIdentifier.bind(this),
-		'M': this.lexIdentifier.bind(this),
-		'N': this.lexIdentifier.bind(this),
-		'O': this.lexIdentifier.bind(this),
-		'P': this.lexIdentifier.bind(this),
-		'Q': this.lexIdentifier.bind(this),
-		'R': this.lexIdentifier.bind(this),
-		'S': this.lexIdentifier.bind(this),
-		'T': this.lexIdentifier.bind(this),
-		'U': this.lexIdentifier.bind(this),
-		'V': this.lexIdentifier.bind(this),
-		'W': this.lexIdentifier.bind(this),
-		'X': this.lexIdentifier.bind(this),
-		'Y': this.lexIdentifier.bind(this),
-		'Z': this.lexIdentifier.bind(this),
+		'A': this.lexIdentifier,
+		'B': this.lexIdentifier,
+		'C': this.lexIdentifier,
+		'D': this.lexIdentifier,
+		'E': this.lexIdentifier,
+		'F': this.lexIdentifier,
+		'G': this.lexIdentifier,
+		'H': this.lexIdentifier,
+		'I': this.lexIdentifier,
+		'J': this.lexIdentifier,
+		'K': this.lexIdentifier,
+		'L': this.lexIdentifier,
+		'M': this.lexIdentifier,
+		'N': this.lexIdentifier,
+		'O': this.lexIdentifier,
+		'P': this.lexIdentifier,
+		'Q': this.lexIdentifier,
+		'R': this.lexIdentifier,
+		'S': this.lexIdentifier,
+		'T': this.lexIdentifier,
+		'U': this.lexIdentifier,
+		'V': this.lexIdentifier,
+		'W': this.lexIdentifier,
+		'X': this.lexIdentifier,
+		'Y': this.lexIdentifier,
+		'Z': this.lexIdentifier,
 
-		'_': this.lexIdentifier.bind(this),
+		'_': this.lexIdentifier,
 
 		// Numbers
-		'0': this.lexNumber.bind(this),
-		'1': this.lexNumber.bind(this),
-		'2': this.lexNumber.bind(this),
-		'3': this.lexNumber.bind(this),
-		'4': this.lexNumber.bind(this),
-		'5': this.lexNumber.bind(this),
-		'6': this.lexNumber.bind(this),
-		'7': this.lexNumber.bind(this),
-		'8': this.lexNumber.bind(this),
-		'9': this.lexNumber.bind(this),
+		'0': this.lexNumber,
+		'1': this.lexNumber,
+		'2': this.lexNumber,
+		'3': this.lexNumber,
+		'4': this.lexNumber,
+		'5': this.lexNumber,
+		'6': this.lexNumber,
+		'7': this.lexNumber,
+		'8': this.lexNumber,
+		'9': this.lexNumber
 	};
-
+	
 	constructor(text: string) {
 		this.text = text;
 
@@ -580,7 +580,7 @@ export class Lexer {
 
 			if (typeof entry === "function") {
 				const start = this.cursor - 1;
-				const result = entry();
+				const result = entry.call(this);
 				const end = this.cursor - 1;
 				if (typeof result === "number") {	
 					return this.newToken(result, start, end);
@@ -612,7 +612,7 @@ export class Lexer {
 			}
 
 			if (typeof entry === "function") {
-				const result = entry();
+				const result = entry.call(this);
 				const end = this.cursor - 1;
 				if (typeof result === "number") {	
 					return this.newToken(result, start, end);

@@ -1,17 +1,16 @@
-import { CompletionItem, CompletionItemKind, CompletionItemTag, InsertTextFormat, MarkupKind, Position, TextDocumentPositionParams, TextEdit } from 'vscode-languageserver';
+import { CompletionItem, CompletionItemKind, CompletionItemTag, CompletionParams, InsertTextFormat, MarkupKind, Position, TextDocumentPositionParams, TextEdit } from 'vscode-languageserver';
 import { Range, TextDocument } from 'vscode-languageserver-textdocument';
 import { documents, getDocumentSettings, documentInfo } from './server';
-import { Token, TokenIterator, TokenKind, globals } from 'squirrel';
-import { StringParam } from 'squirrel/src/globals';
+import { Token, TokenIterator, TokenKind, globals, StringKind } from 'squirrel';
 
 function convertOffsetsToRange(document: TextDocument, start: number, end: number): Range {
 	return {
 		start: document.positionAt(start),
 		end: document.positionAt(end)
-	}
+	};
 }
 
-enum DocKind {
+const enum DocKind {
 	Keywords,
 	Methods,
 	DeprecatedMethods,
@@ -48,7 +47,7 @@ type CompletionCache = {
 
 const completionCache = new Map<string, CompletionCache>();
 
-export async function onCompletionHandler(params: TextDocumentPositionParams): Promise<CompletionItem[]> {
+export async function onCompletionHandler(params: CompletionParams): Promise<CompletionItem[]> {
 	const document = documents.get(params.textDocument.uri);
 	if (!document) {
 		return [];
@@ -73,10 +72,11 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 
 	const cache: CompletionCache = {
 		searchResult: result
-	}
+	};
 	completionCache.set(document.uri, cache);
 
 
+	const triggerChar = params.context?.triggerCharacter;
 	if (result.token) {
 		const kind = result.token.kind;
 		if (kind === TokenKind.LINE_COMMENT || kind === TokenKind.BLOCK_COMMENT) {
@@ -84,12 +84,20 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 		}
 
 		if (kind === TokenKind.DOC) {
+			if (triggerChar !== '@') {
+				return [];
+			}
+
 			const items: CompletionItem[] = [];
 			addCompletionItems(document.uri, items, DocKind.DocSnippets, CompletionItemKind.Snippet);
 			return items;
 		}
 		
-		if ((kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) && result.token.end != offset) {
+		if ((kind === TokenKind.STRING || kind === TokenKind.VERBATIM_STRING) && result.token.end !== offset) {
+			if (triggerChar === '@') {
+				return [];
+			}
+
 			const iterator = new TokenIterator(lexer.getTokens(), result.index - 1);
 			const items = stringCompletion(document.uri, result.token.value, iterator);
 			if (items) {
@@ -98,6 +106,11 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 			}
 		}
 	}
+	// These should only work if the user writes inside a doc / string
+	if (triggerChar === '@' || triggerChar === '/') {
+		return [];
+	}
+
 
 	const items: CompletionItem[] = [];
 	
@@ -184,13 +197,14 @@ export async function onCompletionHandler(params: TextDocumentPositionParams): P
 	return items;
 }
 
-function addPlainCompletionItems(uri: string, items: CompletionItem[], completionItemKind: CompletionItemKind, docs: Set<string>) {
+function addPlainCompletionItems(uri: string, items: CompletionItem[], completionItemKind: CompletionItemKind, docs: Set<string>, kind?: StringKind) {
 	for (const item of docs) {
 		items.push({
 			label: item,
 			kind: completionItemKind,
 			data: {
-				uri
+				uri,
+				kind
 			}
 		});
 	}
@@ -208,7 +222,7 @@ function addCompletionItems(uri: string, items: CompletionItem[], docKind: DocKi
 	if (docKind === DocKind.DeprecatedFunctions || docKind === DocKind.DeprecatedMethods) {
 		tags.push(CompletionItemTag.Deprecated);
 	}
-
+	
 	for (const label of docs.keys()) {
 		items.push({
 			label: label,
@@ -216,31 +230,33 @@ function addCompletionItems(uri: string, items: CompletionItem[], docKind: DocKi
 			tags: tags,
 			data: {
 				uri,
-				docKind
+				kind: docKind
 			}
 		});
 	}
 }
 
-function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringParam): void {
+function addStringCompletionItems(uri: string, items: CompletionItem[], value: string, stringKind: StringKind): void {
 	if (value.length === 0) {
-		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind], stringKind);
 		return;
 	}
 
-	const dot = value.lastIndexOf('.');
-	if (dot === -1) {
-		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind]);
+	const dotIndex = value.lastIndexOf('.');
+	const slashIndex = value.lastIndexOf('/');
+	const lastDelimiterIndex = Math.max(dotIndex, slashIndex);
+	if (lastDelimiterIndex === -1) {
+		addPlainCompletionItems(uri, items, CompletionItemKind.Value, globals.stringCompletions[stringKind], stringKind);
 		return;
 	}
-	
-	const cutValue = value.slice(0, dot + 1);
+
+	const cutValue = value.slice(0, lastDelimiterIndex + 1);
 	for (const item of globals.stringCompletions[stringKind]) {
 		if (item.startsWith(cutValue)) {
 			items.push({
 				label: item.slice(cutValue.length),
 				kind: CompletionItemKind.Value,
-				data: { uri }
+				data: { uri, kind: stringKind }
 			});
 		}
 	}
@@ -431,7 +447,15 @@ function functionParanthesis(document: TextDocument): boolean {
 		}
 		
 		token = iterator.previous();
-	} 
+	}
+
+	if (token.kind === TokenKind.LOCAL) {
+		if (!iterator.hasPrevious()) {
+			return false;
+		}
+		
+		token = iterator.previous();
+	}
 
 	if (token.kind === TokenKind.SEMICOLON || token.kind === TokenKind.LINE_FEED) {
 		return false;
@@ -490,23 +514,32 @@ export async function onCompletionResolveHandler(item: CompletionItem): Promise<
 		]
 		*/
 		item.insertText = item.label.replaceAll('"', '\\"');
+
+		if (!StringKind[item.data.kind].endsWith("PROPERTY")) {
+			item.command = {
+				command: 'cursorMove',
+				title: 'Move Cursor',
+				arguments: [{ to: 'right', by: 'character', value: 1 }]
+			};
+			return item;
+		}
 		
 		let snippet_id = 0;
 		item.insertText = item.insertText.replace(/\d+/g, (match) => `\${${snippet_id++}:${match}}`);
-		if (snippet_id != 0) {
+		if (snippet_id !== 0) {
 			item.insertTextFormat = InsertTextFormat.Snippet;
 		} else {
 			item.command = {
 				command: 'cursorMove',
 				title: 'Move Cursor',
 				arguments: [{ to: 'right', by: 'character', value: 1 }]
-			}
+			};
 		}
 		
 		return item;
 	}
 
-	const doc = docKindToDocs.get(item.data.docKind)?.get(item.label);
+	const doc = docKindToDocs.get(item.data.kind)?.get(item.label);
 	if (!doc) {
 		return item;
 	}

@@ -119,7 +119,7 @@ function getSignatureInformation(doc: globals.Doc): { signatureInformation: Sign
 		signature = signature.slice(dotIndex + 1);
 	}
 
-	const isVariadic = signature.indexOf("...") != -1;
+	const isVariadic = signature.indexOf("...") !== -1;
 
 	const signatureInformation: SignatureInformation = {
 		label: signature,
