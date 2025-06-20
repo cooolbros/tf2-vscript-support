@@ -1,5 +1,5 @@
 {
-    "injectionSelector": "L:comment.block.nut",
+    "injectionSelector": "L:comment.block.squirrel",
     "patterns": [
         {
             "include": "#jsdocbody"
@@ -52,5 +52,5 @@
             ]
         }
     },
-    "scopeName": "documentation.injection.nut"
+    "scopeName": "documentation.injection.squirrel"
 }

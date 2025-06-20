@@ -102,11 +102,11 @@
     "grammars": [
       {
         "language": "squirrel",
-        "scopeName": "source.nut",
+        "scopeName": "source.squirrel",
         "path": "./syntaxes/squirrel.tmLanguage.json"
       },
       {
-        "scopeName": "documentation.injection.nut",
+        "scopeName": "documentation.injection.squirrel",
         "path": "./syntaxes/squirrelDoc.injection.tmLanguage.json",
         "injectTo": [
           "source.nut"
@@ -114,7 +114,7 @@
       },
       {
         "language": "squirrelDoc",
-        "scopeName": "source.nutdoc",
+        "scopeName": "source.squirrelDoc",
         "path": "./syntaxes/squirrelDoc.tmLanguage.json"
       }
     ]
