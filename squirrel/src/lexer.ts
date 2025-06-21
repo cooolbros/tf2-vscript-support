@@ -351,7 +351,6 @@ export class Lexer {
 		},
 		'"': this.lexString,
 		'\'': this.lexString,
-		'`': this.lexString,
 		'{': TokenKind.LEFT_CURLY,
 		'}': TokenKind.RIGHT_CURLY,
 		'(': TokenKind.LEFT_ROUND,
